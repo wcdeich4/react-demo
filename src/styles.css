@@ -1,0 +1,265 @@
+.lightTheme{
+  background-color: #FFFFFF;
+  color: #000;
+}
+
+.darkTheme{
+  color: #FFFFFF;
+  background-color: #000000;
+}
+
+.center{
+  text-align: center;
+}
+
+.largeText{
+  font-size: 32pt;
+}
+
+#root{
+  height: 100vh;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.hamburgericon{
+  position: fixed;
+  margin: 0;
+  font-size:60px;
+  cursor:pointer;
+  filter: invert(52%) sepia(51%) saturate(3615%) hue-rotate(2deg) brightness(107%) contrast(104%);
+  z-index: 3;
+}
+
+.settingsGearIcon{
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0 64 0 82px;
+  font-size:60px;
+  cursor:pointer;
+  filter: invert(52%) sepia(51%) saturate(3615%) hue-rotate(2deg) brightness(107%) contrast(104%);
+  z-index: 4; 
+}
+
+.hamburgerMenuStyle {
+  display: none;
+  height: 100%;
+  width: 25%;
+  font-size:25px;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  border-width:1px;
+  border-style: solid;
+  border-color: red;
+  cursor: pointer;
+}
+
+.hamburgerMenuStyle a {
+  text-decoration: none;
+  font-size: 25px;
+  display: block;
+}
+
+.hamburgerMenuStyle a:visited {
+  color: #FF00FF;
+}
+
+.hamburgerMenuStyle a:link {
+  color: #0000FF;
+}
+
+.hamburgerMenuStyle a:hover {
+  color: #FF0000;
+}
+
+.settingsMenuStyle {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 10%;
+  font-size:25px;
+  z-index: 5;
+  top: 0;
+  overflow-x: hidden;
+  border-width:1px;
+  border-style: solid;
+  border-color: red;
+  cursor: pointer;
+}
+
+.settingsMenuStyle a {
+  text-decoration: none;
+  font-size: 25px;
+  display: block;
+}
+
+.settingsMenuStyle a:visited {
+  color: #FF00FF;
+}
+
+.settingsMenuStyle a:link {
+  color: #0000FF;
+}
+
+.settingsMenuStyle a:hover {
+  color: #FF0000;
+}
+
+body {
+  color: #FFFFFF;
+  background-color: #000000;
+}
+
+li {
+  content: "\2022";
+  color: red;
+
+}
+
+.brightWhite{
+  color:#FFFFFF;
+}
+  
+.sidenav a {
+  text-decoration: none;
+  font-size: 25px;
+  color: #FF8000;
+  display: block;
+}
+
+.sidenav a:link {
+  color: #0000FF;
+}
+
+.sidenav a:hover {
+  color: #FF0000;
+}
+
+.sidenav a:visited {
+  color: #FF00FF;
+}
+
+
+.hamburgerClosebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+}
+
+.closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+}
+
+.fullWidthFulllHeight{
+  width: 100%;
+  height: 100%; 
+  height: 100vh;
+}
+
+.absolutePosition{
+  position:absolute;
+}
+
+.fullScreen{
+  overflow:hidden;
+  overflow-x:hidden;
+  overflow-y:hidden;
+  height:100%;
+  width:100%;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+}
+
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+}
+
+
+canvas { 
+  width: 100%; 
+  height: 100% ;
+  background: #000;
+  margin: 0 0 0 0;
+  top: 0;
+}
+
+
+.hidden{
+    display: none;
+  }
+
+
+@media only screen and (orientation:portrait) {
+  /* For mobile phones: */
+  .hamburgerIconMargin{
+    margin-left: 0;
+  }
+
+  .hamburgerMenuStyle {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    background-color: #000000FF; /*same as background-color:rgba(0, 0, 0, 1.0);*/
+    overflow-x: hidden;
+    border-width:1px;
+    border-style: solid;
+    border-color: red;
+    cursor: pointer;
+  }
+
+  .settingsMenuStyle {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    background-color: #000000FF; /*same as background-color:rgba(0, 0, 0, 1.0);*/
+    overflow-x: hidden;
+    border-width:1px;
+    border-style: solid;
+    border-color: red;
+    cursor: pointer;
+  }
+
+  .hamburgerClosebtn {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 36px;
+  }
+
+}
+
+/*FireFox only*/
+@-moz-document url-prefix() {
+  /*mobile inside FireFox only*/
+  @media only screen and (orientation:portrait) {
+    .hamburgerClosebtn {
+      position: absolute;
+      top: 0;
+      right: 110px;
+      font-size: 36px;
+    }
+  }
+}
