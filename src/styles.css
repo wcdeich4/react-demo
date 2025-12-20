@@ -16,6 +16,10 @@
   font-size: 32pt;
 }
 
+.orangeOutline{
+  outline: 1px solid #FF8000;
+}
+
 #root{
   height: 100vh;
   height: 100%;

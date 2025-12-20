@@ -21,9 +21,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        // notepad: resolve(__dirname, 'src', 'notepad', 'index.html'), 
-        // fractiles: resolve(__dirname, 'src', 'fractiles', 'index.html'),  //todo
-        // credits: resolve(__dirname, 'src', 'credits', 'index.html'),
       }
     }
   }

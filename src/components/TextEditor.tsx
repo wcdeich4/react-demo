@@ -54,7 +54,7 @@ export default function TextEditor({downloadFunction}) {
         <textarea
           value={textAreaContent}
           onChange={handleTextAreaChange}
-          className="fullWidthFulllHeight"
+          className={currentTheme == 'light' ? 'lightTheme fullWidthFulllHeight orangeOutline' : 'darkTheme fullWidthFulllHeight orangeOutline'} 
           rows={ window.innerWidth / PIXELS_PER_ROW }
           cols={ window.innerHeight / PIXELS_PER_COL }
           placeholder="Start typing here..."
