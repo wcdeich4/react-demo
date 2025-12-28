@@ -1,11 +1,12 @@
 import { createRoot } from 'react-dom/client'
-import './styles.css'
 import { Provider } from "react-redux";
 import { store } from "./state/store";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './styles.css'
 import Home from './components/Home';
 import NotFound from './components/NotFound';
 import About from './components/About';
+import ToDo from './components/ToDo';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: '/about/:id',
     element: <About />,
+  },
+  {
+    path: '/todo',
+    element: <ToDo />,
   },
 ]);
 

@@ -21,55 +21,14 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+      },
+      output: {
+        entryFileNames: `assets/[name].js`, // Name for entry chunks
+        chunkFileNames: `assets/[name].js`, // Name for dynamic import chunks
+        assetFileNames: `assets/[name].[ext]`, // Name for assets like CSS, images, etc.
       }
     }
   }
 
 
 })
-
-
-
-
-/*
-
-
-
-
-
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  publicDir: '../public',
-  root: resolve(__dirname, 'src'),  //necessary for true Vite Multi-Page to work
-  assetsInclude: ['./assets/*'],
-  plugins: [react()],
-    server: {
-    host: 'localhost',
-    port: 7777,
-    cors: {
-      "origin": "*",
-      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-      "preflightContinue": false,
-      "optionsSuccessStatus": 204
-    },
-  },
-  build: {
-    outDir: resolve(__dirname, 'dist'),
-    emptyOutDir: true,
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src', 'index.html'),
-        notepad: resolve(__dirname, 'src', 'notepad', 'index.html'),
-        about: resolve(__dirname, 'src', 'about', 'index.html'),
-        fractiles: resolve(__dirname, 'src', 'fractiles', 'index.html'),
-        credits: resolve(__dirname, 'src', 'credits', 'index.html'),
-      }
-    }
-  }
-})
-
-*/
-

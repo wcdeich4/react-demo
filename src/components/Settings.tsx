@@ -14,7 +14,7 @@ export default function Settings() {
       <img src={gear} id="mySettingsGearIconId" className="settingsGearIcon" width="64x" height="64px" onClick={() => openSettingsMenu() } />
       <nav id="mySettingsNavID" className={currentTheme == 'light' ? 'lightTheme settingsMenuStyle' : 'darkTheme settingsMenuStyle'} >
         <a className="closebtn" onClick={() => closeSettingsMenu() }  >&times;</a>
-        <ul>
+        <ul className="noBullets">
           <li>
             <button onClick={() => dispatch(toggleTheme())} >
               theme is {currentTheme}
