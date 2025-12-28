@@ -27,7 +27,7 @@ function ToDo() {
   function createTodo() {
     const newToDo = window.prompt("Todo content");
     if(newToDo){
-      client.models.Todo.create({ content: newToDo }); //false alarm intellisense error
+      client.models.Todo.create({ content: [newToDo] }); 
     }
   }
 
@@ -43,7 +43,7 @@ function ToDo() {
       <button className={currentTheme == 'light' ? 'lightTheme todoButton' : 'darkTheme todoButton'} onClick={createTodo}>+ new</button>
       <ul className="todoUl">
         {todos.map((todo) => (
-          <li className="todoLi" key={todo.id}>{todo.content}</li>
+          <li className="todoLi" key={todo.id}>{ todo.content[0] }</li>
         ))}
       </ul>
       {/* <div>
