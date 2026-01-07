@@ -1,0 +1,5 @@
+{
+  "save": "http://localhost:65534/PostMongoFileContent",
+  "load": "http://localhost:65534/GetMongoFileContent/",
+  "delete": "http://localhost:65534/DeleteMongoFile/"
+}

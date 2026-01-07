@@ -16,6 +16,9 @@ export default function Menu({currentTheme}) {
             <Link to={`/about/${aboutParameter}`}>About</Link>
           </li>
           <li>
+            <a href="/static.html">Static HTML link</a>
+          </li>
+          <li>
             <Link to="/todo">AWS ToDo</Link>
           </li>
         </ul>
