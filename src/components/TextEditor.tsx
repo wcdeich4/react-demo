@@ -46,11 +46,10 @@ useEffect(() => { //called on component mount
   };
 
   const saveToMongoDB = async () => {
-    //TODO: replace existing record in MongoDB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! <- backend change needed
     if(mongoCRUD.save){
       setShowSpinner(true);
       try{
-        const response = await fetch(mongoCRUD.load, {
+        const response = await fetch(mongoCRUD.save, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json', // Specify the content type
