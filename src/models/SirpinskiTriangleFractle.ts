@@ -57,12 +57,13 @@ export class SirpinskiTriangleFractile extends Fractile
 
     public draw(mathCanvas: MathCanvas2D): void
     {
-        if(this.clearCanvasBeforeDraw){
-            mathCanvas.Erase();
-            mathCanvas.fillWithBackgroundColor();
-        }
-        mathCanvas.setRange(this.range);
-        this.processTriangles(mathCanvas, this.seedPoint1, this.seedPoint2, this.seedPoint3, 0);
+      mathCanvas.backgroundColor = 'black';
+      if(this.clearCanvasBeforeDraw){
+          mathCanvas.Erase();
+          mathCanvas.fillWithBackgroundColor();
+      }
+      mathCanvas.setRange(this.range);
+      this.processTriangles(mathCanvas, this.seedPoint1, this.seedPoint2, this.seedPoint3, 0);
     }
 
     stop(): boolean 
