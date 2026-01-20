@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { RootState } from '../state/store';
+import { ThemeState } from '../state/store';
 import { useSelector } from 'react-redux';
 import mongoCRUD from '../../mongo_api_urls.json';
 
@@ -14,7 +14,7 @@ useEffect(() => { //called on component mount
     console.log('TextEditor Component has been loaded/mounted............');
   }, []); // The empty array ensures it runs only once on mount
 
-  const currentTheme = useSelector((state: RootState) => state.theme.mode);
+  const currentTheme = useSelector((state: ThemeState) => state.theme.mode);
   const [textAreaContent, setTextAreaContent] = useState('');
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => { setFileName(event.target.value); };
   const [fileName, setFileName] = useState<string>(defaultFileName);
@@ -73,7 +73,6 @@ useEffect(() => { //called on component mount
   };
 
   const loadFromMongo = async () => {
-    //TODO: load url from json file
     if(mongoCRUD.load){
       const url = mongoCRUD.load + fileName;
       setShowSpinner(true);

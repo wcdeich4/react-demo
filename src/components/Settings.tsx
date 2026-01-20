@@ -1,12 +1,12 @@
 import { toggleTheme } from '../state/themeSlice';
-import { AppDispatch, RootState } from '../state/store';
+import { AppDispatch, ThemeState } from '../state/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { incrementByAmount } from '../state/counterSlice';
 import gear from '../assets/gear.svg';
 
 export default function Settings() {
-  const currentTheme = useSelector((state: RootState) => state.theme.mode);
-  const count = useSelector((state: RootState) => state.counter.value);
+  const currentTheme = useSelector((state: ThemeState) => state.theme.mode);
+  const count = useSelector((state: ThemeState) => state.counter.value);
   const dispatch = useDispatch<AppDispatch>();
 
   return (

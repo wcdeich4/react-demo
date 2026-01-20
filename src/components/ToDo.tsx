@@ -4,7 +4,7 @@ import { generateClient } from "aws-amplify/data";
 import { Amplify } from "aws-amplify";
 import type { Schema } from "../../amplify/data/resource";
 import outputs from "../../amplify_outputs.json";
-import { RootState } from '../state/store';
+import { ThemeState } from '../state/store';
 import Menu from './Menu';
 import Settings from './Settings';
 
@@ -31,7 +31,7 @@ function ToDo() {
     }
   }
 
-  const currentTheme = useSelector((state: RootState) => state.theme.mode);
+  const currentTheme = useSelector((state: ThemeState) => state.theme.mode);
 
   return (
     <main className={currentTheme == 'light' ? 'lightTheme fullWidthFulllHeight todoMain' : 'darkTheme fullWidthFulllHeight todoMain'} >

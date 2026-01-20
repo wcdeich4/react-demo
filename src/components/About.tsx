@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { RootState } from '../state/store';
+import { ThemeState } from '../state/store';
 import { useSelector } from 'react-redux';
 import Menu from './Menu';
 import Settings from './Settings';
@@ -7,7 +7,7 @@ import Settings from './Settings';
 export default function About() {
   const params = useParams<{ id: string }>();
   //const { id } = useParams<string>();
-  const currentTheme = useSelector((state: RootState) => state.theme.mode);
+  const currentTheme = useSelector((state: ThemeState) => state.theme.mode);
   return (
     <div className={currentTheme == 'light' ? 'lightTheme fullWidthFulllHeight' : 'darkTheme fullWidthFulllHeight'} >
       <Menu currentTheme={currentTheme}/>

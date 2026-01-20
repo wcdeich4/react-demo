@@ -13,13 +13,16 @@ export default function Menu({currentTheme}) {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to={`/about/${aboutParameter}`}>About</Link>
+            <Link to="/todo">AWS ToDo</Link>
           </li>
           <li>
             <a href="/static.html">Static HTML link</a>
           </li>
           <li>
-            <Link to="/todo">AWS ToDo</Link>
+            <Link to="/fractiles">Fractiles</Link>
+          </li>
+          <li>
+            <Link to={`/about/${aboutParameter}`}>About</Link>
           </li>
         </ul>
       </nav>

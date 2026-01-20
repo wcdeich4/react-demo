@@ -1,25 +1,17 @@
-import { AreCoLinear } from './AreCoLinear';
-import { Vector } from './Vector';
+import { AreCoLinear } from '../math/AreCoLinear';
+import { Vector } from '../math/Vector';
 import { IMathDrawable } from './IMathDrawable';
 import { Pixel } from './Pixel';
 import { ScreenRangeConverter2D } from '../math/ScreenRangeConverter2D';
 
-
-export class MathCanvas2D
-{
+export class MathCanvas2D {
     public range: ScreenRangeConverter2D;
     public applySafetyChecks: boolean = true;
     public drawAxies2D: boolean = true;
     public xAxisColor: string | CanvasGradient | CanvasPattern = 'white';
     public yAxisColor: string | CanvasGradient | CanvasPattern = 'white';
     public backgroundColor: string | CanvasGradient | CanvasPattern | null = null;
-    // private mostRecentCanvasToWorld2DVector: Vector;
-    // private mostRecentCanvasToWorld2DComplex: ComplexPoint;
-    // private mostRecentCoordinate2D: Coordinate2D;
-
     public drawableArray: Array<IMathDrawable> = new Array<IMathDrawable>();
-
-    
     public canvasRenderingContext2D: CanvasRenderingContext2D;
     private controlPoint1: Vector;
     private controlPoint2: Vector;
@@ -34,31 +26,22 @@ export class MathCanvas2D
     private canvasX3: number;
     private canvasY3: number;
 
-    public constructor(canvas: CanvasRenderingContext2D, canvasRange?: ScreenRangeConverter2D, backgroundColor: string | CanvasGradient | CanvasPattern | null = null)
-    {
+    public constructor(canvas: CanvasRenderingContext2D, canvasRange?: ScreenRangeConverter2D, backgroundColor: string | CanvasGradient | CanvasPattern | null = null) {
         this.canvasRenderingContext2D = canvas;
-        if (canvasRange != null)
-        {
+        if(canvasRange != null){
             this.setRange(canvasRange);
-            // this.range = canvasRange;
-            // this.onresize(); //not DRY
         }
         this.backgroundColor = backgroundColor;
         this.controlPoint1 = new Vector([0, 0]);
         this.controlPoint2 = new Vector([0, 0]);
-        // this.mostRecentCanvasToWorld2DVector = new Vector();
-        // this.mostRecentCanvasToWorld2DComplex = new ComplexPoint(0, 0);
-        // this.mostRecentCoordinate2D = new Coordinate2D();  //TODO:  switch to only this.mostRecentCoordinate2D ?
     }
 
     /**
      * update x and y aspect ratios and width and height
      */
-    public onresize(): void
-    {
-        if (this.range != null)
-        {
-            this.range.resize(this.canvasRenderingContext2D.canvas.width, this.canvasRenderingContext2D.canvas.height );
+    public onresize(): void {
+        if (this.range != null) {
+            this.range.resize(this.canvasRenderingContext2D.canvas.width, this.canvasRenderingContext2D.canvas.height);
         }
     }
 
@@ -66,8 +49,7 @@ export class MathCanvas2D
      * get width
      * @returns this.canvasRenderingContext2D.canvas.width
      */
-    public getWidth(): number
-    {
+    public getWidth(): number {
         return this.canvasRenderingContext2D.canvas.width;
     }
 
@@ -75,43 +57,37 @@ export class MathCanvas2D
      * get height
      * @returns this.canvasRenderingContext2D.canvas.height
      */
-    public getHeight(): number
-    {
-        return this.canvasRenderingContext2D.canvas.height ;
+    public getHeight(): number {
+        return this.canvasRenderingContext2D.canvas.height;
     }
 
     /**
      * remove all elements in the drawable array by setting the length to zero
      */
-    public emptyDrawableArray(): void
-    {
+    public emptyDrawableArray(): void {
         this.drawableArray.length = 0;
     }
 
     /**
      * fill background with the background color
      */
-    public fillWithBackgroundColor(): void
-    {
-        this.canvasRenderingContext2D.fillStyle = this.backgroundColor ;
+    public fillWithBackgroundColor(): void {
+        this.canvasRenderingContext2D.fillStyle = this.backgroundColor;
         this.canvasRenderingContext2D.fillRect(0, 0, this.canvasRenderingContext2D.canvas.width, this.canvasRenderingContext2D.canvas.height);
     }
 
     /**
      * draw all the objects in the drawableArray in order
      */
-    public draw(): void
-    {
+    public draw(): void {
         this.Erase();
 
-        if (this.backgroundColor != null)
-        {
-            this.canvasRenderingContext2D.fillStyle = this.backgroundColor ;
+        if (this.backgroundColor != null) {
+            this.canvasRenderingContext2D.fillStyle = this.backgroundColor;
             this.canvasRenderingContext2D.fillRect(0, 0, this.canvasRenderingContext2D.canvas.width, this.canvasRenderingContext2D.canvas.height);
         }
 
-        if (this.drawAxies2D)
-        {
+        if (this.drawAxies2D) {
             this.drawLineWorld2D(this.range.xMin, 0, this.range.xMax, 0, this.xAxisColor);
             this.drawLineWorld2D(0, this.range.yMin, 0, this.range.yMax, this.yAxisColor);
         }
@@ -122,8 +98,7 @@ export class MathCanvas2D
      * Set range. The this.range variable needs to be private so we can enforce this.onresize() to be called every time it is set.
      * @param range {ScreenRangeConverter2D} xMin, xMax, yMin, yMax for the size of the canvas pixels
      */
-    public setRange(range: ScreenRangeConverter2D): void
-    {
+    public setRange(range: ScreenRangeConverter2D): void {
         this.range = range;
         this.onresize();
     }
@@ -132,8 +107,7 @@ export class MathCanvas2D
      * get the current range object.  The this.range variable needs to be private so we can enforce this.onresize() to be called every time it is set.
      * @returns {ScreenRangeConverter2D} this.range
      */
-    public getRange(): ScreenRangeConverter2D
-    {
+    public getRange(): ScreenRangeConverter2D {
         return this.range;
     }
 
@@ -144,50 +118,44 @@ export class MathCanvas2D
      * @param yMin minimum y
      * @param yMax maximum y
      */
-    public setRangeValues(xMin: number, xMax: number, yMin: number, yMax: number): void
-    {
-        if (this.range == null)
-        {
+    public setRangeValues(xMin: number, xMax: number, yMin: number, yMax: number): void {
+        if (this.range == null) {
             let newRrange = new ScreenRangeConverter2D(xMin, xMax, yMin, yMax);
             this.setRange(newRrange);
         }
-        else
-        {
+        else {
             this.range.set(xMin, xMax, yMin, yMax);
             this.onresize();
         }
-        
+
     }
 
 
 
-    public AutoScaleHeightToMatchWidth(): void
-    {
-        let heightOverWidth: number =  this.canvasRenderingContext2D.canvas.height / this.canvasRenderingContext2D.canvas.width; 
+    public AutoScaleHeightToMatchWidth(): void {
+        let heightOverWidth: number = this.canvasRenderingContext2D.canvas.height / this.canvasRenderingContext2D.canvas.width;
         this.range.yMax *= heightOverWidth;
         this.range.yMin *= heightOverWidth;
 
         //TODO: handle non-centered ranges
-        this.onresize(); 
-    }
-
-
-
-    public AutoScaleWidthToMatchHeight(): void
-    {
-        //TODO: handle non-centered ranges
-        let widthOverHeight: number = this.canvasRenderingContext2D.canvas.width / this.canvasRenderingContext2D.canvas.height; 
-        this.range.xMax = this.range.yMax * widthOverHeight  ;
-        this.range.xMin = this.range.yMin * widthOverHeight ;
         this.onresize();
     }
-    
+
+
+
+    public AutoScaleWidthToMatchHeight(): void {
+        //TODO: handle non-centered ranges
+        let widthOverHeight: number = this.canvasRenderingContext2D.canvas.width / this.canvasRenderingContext2D.canvas.height;
+        this.range.xMax = this.range.yMax * widthOverHeight;
+        this.range.xMin = this.range.yMin * widthOverHeight;
+        this.onresize();
+    }
+
 
     /**
      * clear contents of the canvas
      */
-    public Erase(): void
-    {
+    public Erase(): void {
         this.canvasRenderingContext2D.clearRect(0, 0, this.canvasRenderingContext2D.canvas.width, this.canvasRenderingContext2D.canvas.height);
     }
 
@@ -201,29 +169,26 @@ export class MathCanvas2D
      * @param y3 y coordinate 3
      * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
-    public drawTriangleWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number,  color: string | CanvasGradient | CanvasPattern): void
-    {
+    public drawTriangleWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string | CanvasGradient | CanvasPattern): void {
 
         let drawLineInstead: boolean = this.applySafetyChecks && AreCoLinear.twoDimensional(x1, y1, x2, y2, x3, y3);
-        if (drawLineInstead)
-        {
+        if (drawLineInstead) {
             //Even thought these points are co-linear, there is no guarantee what order they are in, so we don't know which point is the one in the middle, and doing the math to find the point in the middle woudl take more time than just drawing two line segments
-            this.drawTriangleOutlineWorld2D(x1, y1, x2, y2, x3, y3,  color);
+            this.drawTriangleOutlineWorld2D(x1, y1, x2, y2, x3, y3, color);
         }
-        else
-        {
+        else {
             this.canvasX1 = this.range.world2DXtoCanvasX(x1);
-           // console.log("X1 = " + this.canvasX1);
+            // console.log("X1 = " + this.canvasX1);
             this.canvasY1 = this.range.world2DYtoCanvasY(y1);
             console.log("Y1 = " + this.canvasY1);
 
             this.canvasX2 = this.range.world2DXtoCanvasX(x2);
-          //  console.log("X2 = " + this.canvasX2);
+            //  console.log("X2 = " + this.canvasX2);
             this.canvasY2 = this.range.world2DYtoCanvasY(y2);
-          //  console.log("Y2 = " + this.canvasY2);
+            //  console.log("Y2 = " + this.canvasY2);
 
             this.canvasX3 = this.range.world2DXtoCanvasX(x3);
-          //  console.log("X3 = " + this.canvasX3);
+            //  console.log("X3 = " + this.canvasX3);
             this.canvasY3 = this.range.world2DYtoCanvasY(y3);
             console.log("Y3 = " + this.canvasY3);
 
@@ -247,11 +212,10 @@ export class MathCanvas2D
      * @param y3 y coordinate 3
      * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
-    public drawTriangleOutlineWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number,  color: string | CanvasGradient | CanvasPattern): void
-    {
-        this.drawLineWorld2D(x1,y1, x2, y2, color);
-        this.drawLineWorld2D(x2,y2, x3, y3, color);
-        this.drawLineWorld2D(x3,y3, x1, y1, color);
+    public drawTriangleOutlineWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string | CanvasGradient | CanvasPattern): void {
+        this.drawLineWorld2D(x1, y1, x2, y2, color);
+        this.drawLineWorld2D(x2, y2, x3, y3, color);
+        this.drawLineWorld2D(x3, y3, x1, y1, color);
     }
 
     /**
@@ -260,12 +224,10 @@ export class MathCanvas2D
      * @param {string | CanvasGradient | CanvasPattern} color stroke style
      * @param {...Array<Vector>} vertexArray Array of Vector
      */
-    public drawLineSegmentVertexArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...vertexArray: Array<Vector>): void
-    {
-        for(let i = 0; i < vertexArray.length - 1; i ++ )
-        {
-          //  this.controlPoint1 = vertexArray[i];
-          //  this.controlPoint2 = vertexArray[i + 1];
+    public drawLineSegmentVertexArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...vertexArray: Array<Vector>): void {
+        for (let i = 0; i < vertexArray.length - 1; i++) {
+            //  this.controlPoint1 = vertexArray[i];
+            //  this.controlPoint2 = vertexArray[i + 1];
             this.drawLineWorld2D(vertexArray[i].elements[0], vertexArray[i].elements[1], vertexArray[i + 1].elements[0], vertexArray[i + 1].elements[1], color);
         }
     }
@@ -273,86 +235,84 @@ export class MathCanvas2D
 
 
 
-    public drawImageVarArgCanvasXY(image: HTMLImageElement, ...vertexArray: Array<Vector>): void
-    {
+    public drawImageVarArgCanvasXY(image: HTMLImageElement, ...vertexArray: Array<Vector>): void {
 
 
-    //texture uv origin is upper lefthand corner like images
-    var XTextureCoordinatePercent0 = 0, YTextureCoordinatePercent0 = 0;
-    var XTextureCoordinatePercent1 = 1, YTextureCoordinatePercent1 = 0;
-    var XTextureCoordinatePercent2 = 1, YTextureCoordinatePercent2 = 1;
+        //texture uv origin is upper lefthand corner like images
+        var XTextureCoordinatePercent0 = 0, YTextureCoordinatePercent0 = 0;
+        var XTextureCoordinatePercent1 = 1, YTextureCoordinatePercent1 = 0;
+        var XTextureCoordinatePercent2 = 1, YTextureCoordinatePercent2 = 1;
 
-    var u0 = XTextureCoordinatePercent0*image.width, 
-    v0 = YTextureCoordinatePercent0*image.height;
-    var x0 = vertexArray[0].elements[0]; 
-    var y0 = vertexArray[0].elements[1];
-    var u1 = XTextureCoordinatePercent1*image.width, 
-    v1 = YTextureCoordinatePercent1*image.height;
-    var x1 = vertexArray[1].elements[0]; 
-    var y1 = vertexArray[1].elements[1];
-    var u2 = XTextureCoordinatePercent2*image.width, 
-    v2 = YTextureCoordinatePercent2*image.height;
-    var x2 = vertexArray[2].elements[0];
-    var y2 = vertexArray[2].elements[1];
+        var u0 = XTextureCoordinatePercent0 * image.width,
+            v0 = YTextureCoordinatePercent0 * image.height;
+        var x0 = vertexArray[0].elements[0];
+        var y0 = vertexArray[0].elements[1];
+        var u1 = XTextureCoordinatePercent1 * image.width,
+            v1 = YTextureCoordinatePercent1 * image.height;
+        var x1 = vertexArray[1].elements[0];
+        var y1 = vertexArray[1].elements[1];
+        var u2 = XTextureCoordinatePercent2 * image.width,
+            v2 = YTextureCoordinatePercent2 * image.height;
+        var x2 = vertexArray[2].elements[0];
+        var y2 = vertexArray[2].elements[1];
 
-  //  var x3 = 10, 
-   // y3 = 310;
+        //  var x3 = 10, 
+        // y3 = 310;
 
-    this.canvasRenderingContext2D.save();
-    this.canvasRenderingContext2D.beginPath();
+        this.canvasRenderingContext2D.save();
+        this.canvasRenderingContext2D.beginPath();
 
-   // this.canvasX1 = this.range.world2DXtoCanvasX(vertexArray[0].elements[0]);
-  //  this.canvasY1 = this.range.world2DYtoCanvasY(vertexArray[0].elements[1]);
+        // this.canvasX1 = this.range.world2DXtoCanvasX(vertexArray[0].elements[0]);
+        //  this.canvasY1 = this.range.world2DYtoCanvasY(vertexArray[0].elements[1]);
 
-   // vertexArray[0].transformWorld2DToCanvas2DCoordinates(this.range) //Property 'transformWorld2DToCanvas2DCoordinates' does not exist on type 'Vector'.ts(2339)
+        // vertexArray[0].transformWorld2DToCanvas2DCoordinates(this.range) //Property 'transformWorld2DToCanvas2DCoordinates' does not exist on type 'Vector'.ts(2339)
 
-    this.canvasRenderingContext2D.moveTo(vertexArray[0].elements[0], vertexArray[0].elements[1]);
-    for(let i = 1; i < vertexArray.length; i ++ )
-    {
-        this.canvasRenderingContext2D.lineTo(vertexArray[i].elements[0], vertexArray[i].elements[1]);
-        //console.log(vertexArray[i].toString());
-    }
-    this.canvasRenderingContext2D.closePath();
-    this.canvasRenderingContext2D.clip();
-
-
-//    var delta = u0*v1 + v0*u2 + u1*v2 - v1*u2 - v0*u1 - u0*v2;
-    // var delta_a = x0*v1 + v0*x2 + x1*v2 - v1*x2 - v0*x1 - x0*v2;
-    // var delta_b = u0*x1 + x0*u2 + u1*x2 - x1*u2 - x0*u1 - u0*x2;
-    // var delta_c = u0*v1*x2 + v0*x1*u2 + x0*u1*v2 - x0*v1*u2 - v0*u1*x2 - u0*x1*v2;
-    // var delta_d = y0*v1 + v0*y2 + y1*v2 - v1*y2 - v0*y1 - y0*v2;
-    // var delta_e = u0*y1 + y0*u2 + u1*y2 - y1*u2 - y0*u1 - u0*y2;
-    // var delta_f = u0*v1*y2 + v0*y1*u2 + y0*u1*v2 - y0*v1*u2 - v0*u1*y2 - u0*y1*v2;
-    // // a*u0 + b*v0 + c = x0
-    // // a*u1 + b*v1 + c = x1
-    // // a*u2 + b*v2 + c = x2
-    // // d*u0 + e*v0 + f = y0
-    // // d*u1 + e*v1 + f = y1
-    // // d*u2 + e*v2 + f = y2
+        this.canvasRenderingContext2D.moveTo(vertexArray[0].elements[0], vertexArray[0].elements[1]);
+        for (let i = 1; i < vertexArray.length; i++) {
+            this.canvasRenderingContext2D.lineTo(vertexArray[i].elements[0], vertexArray[i].elements[1]);
+            //console.log(vertexArray[i].toString());
+        }
+        this.canvasRenderingContext2D.closePath();
+        this.canvasRenderingContext2D.clip();
 
 
-    //   // TODO: eliminate common subexpressions.
-      var denom = u0 * (v2 - v1) - u1 * v2 + u2 * v1 + (u1 - u2) * v0;
-      if (denom == 0) {
-        console.error("denom = 0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      }
-      var m11 = - (v0 * (x2 - x1) - v1 * x2 + v2 * x1 + (v1 - v2) * x0) / denom;
-      var m12 = (v1 * y2 + v0 * (y1 - y2) - v2 * y1 + (v2 - v1) * y0) / denom;
-      var m21 = (u0 * (x2 - x1) - u1 * x2 + u2 * x1 + (u1 - u2) * x0) / denom;
-      var m22 = - (u1 * y2 + u0 * (y1 - y2) - u2 * y1 + (u2 - u1) * y0) / denom;
-      var dx = (u0 * (v2 * x1 - v1 * x2) + v0 * (u1 * x2 - u2 * x1) + (u2 * v1 - u1 * v2) * x0) / denom;
-      var dy = (u0 * (v2 * y1 - v1 * y2) + v0 * (u1 * y2 - u2 * y1) + (u2 * v1 - u1 * v2) * y0) / denom;
+        //    var delta = u0*v1 + v0*u2 + u1*v2 - v1*u2 - v0*u1 - u0*v2;
+        // var delta_a = x0*v1 + v0*x2 + x1*v2 - v1*x2 - v0*x1 - x0*v2;
+        // var delta_b = u0*x1 + x0*u2 + u1*x2 - x1*u2 - x0*u1 - u0*x2;
+        // var delta_c = u0*v1*x2 + v0*x1*u2 + x0*u1*v2 - x0*v1*u2 - v0*u1*x2 - u0*x1*v2;
+        // var delta_d = y0*v1 + v0*y2 + y1*v2 - v1*y2 - v0*y1 - y0*v2;
+        // var delta_e = u0*y1 + y0*u2 + u1*y2 - y1*u2 - y0*u1 - u0*y2;
+        // var delta_f = u0*v1*y2 + v0*y1*u2 + y0*u1*v2 - y0*v1*u2 - v0*u1*y2 - u0*y1*v2;
+        // // a*u0 + b*v0 + c = x0
+        // // a*u1 + b*v1 + c = x1
+        // // a*u2 + b*v2 + c = x2
+        // // d*u0 + e*v0 + f = y0
+        // // d*u1 + e*v1 + f = y1
+        // // d*u2 + e*v2 + f = y2
 
 
-      //  console.log("delta_a = " + delta_a);
-//   this.canvasRenderingContext2D.transform(delta_a/delta, delta_d/delta,delta_b/delta, delta_e/delta,delta_c/delta, delta_f/delta);
-//    this.canvasRenderingContext2D.drawImage(image , 0, 0);
+        //   // TODO: eliminate common subexpressions.
+        var denom = u0 * (v2 - v1) - u1 * v2 + u2 * v1 + (u1 - u2) * v0;
+        if (denom == 0) {
+            console.error("denom = 0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+        var m11 = - (v0 * (x2 - x1) - v1 * x2 + v2 * x1 + (v1 - v2) * x0) / denom;
+        var m12 = (v1 * y2 + v0 * (y1 - y2) - v2 * y1 + (v2 - v1) * y0) / denom;
+        var m21 = (u0 * (x2 - x1) - u1 * x2 + u2 * x1 + (u1 - u2) * x0) / denom;
+        var m22 = - (u1 * y2 + u0 * (y1 - y2) - u2 * y1 + (u2 - u1) * y0) / denom;
+        var dx = (u0 * (v2 * x1 - v1 * x2) + v0 * (u1 * x2 - u2 * x1) + (u2 * v1 - u1 * v2) * x0) / denom;
+        var dy = (u0 * (v2 * y1 - v1 * y2) + v0 * (u1 * y2 - u2 * y1) + (u2 * v1 - u1 * v2) * y0) / denom;
 
-this.canvasRenderingContext2D.transform(m11, m12, m21, m22, dx, dy);
-this.canvasRenderingContext2D.drawImage(image , 0, 0);
+
+        //  console.log("delta_a = " + delta_a);
+        //   this.canvasRenderingContext2D.transform(delta_a/delta, delta_d/delta,delta_b/delta, delta_e/delta,delta_c/delta, delta_f/delta);
+        //    this.canvasRenderingContext2D.drawImage(image , 0, 0);
+
+        this.canvasRenderingContext2D.transform(m11, m12, m21, m22, dx, dy);
+        this.canvasRenderingContext2D.drawImage(image, 0, 0);
 
 
-    this.canvasRenderingContext2D.restore();
+        this.canvasRenderingContext2D.restore();
 
     }
 
@@ -366,27 +326,24 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
      * @param y2 y coordinate 2
      * @param color {string | CanvasGradient | CanvasPattern} stroke style
      */
-    public drawLineWorld2D(x1: number, y1: number, x2: number, y2: number, color: string | CanvasGradient | CanvasPattern): void
-    {
+    public drawLineWorld2D(x1: number, y1: number, x2: number, y2: number, color: string | CanvasGradient | CanvasPattern): void {
         //no!  a single point line (degenerate line) is not srawn by default by HTML5 canvas!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if ((x1 == x2) && (y1 == y2))
-        {
+        if ((x1 == x2) && (y1 == y2)) {
             //TODO: add drawPoint for circle
             this.drawPixelWorld2DCoordinates(x1, y1, color);
         }
-        else
-        {
+        else {
             this.canvasX1 = this.range.world2DXtoCanvasX(x1);
             this.canvasY1 = this.range.world2DYtoCanvasY(y1);
-         //   console.log("this.canvasY1 =" + this.canvasY1);
-    
+            //   console.log("this.canvasY1 =" + this.canvasY1);
+
             this.canvasX2 = this.range.world2DXtoCanvasX(x2);
             this.canvasY2 = this.range.world2DYtoCanvasY(y2);
-         //   console.log("this.canvasX2 =" + this.canvasX2);
-       //     console.log("this.canvasY2 =" + this.canvasY2);
-    
-           // this.canvasRenderingContext2D.imageSmoothingEnabled = false;
-    
+            //   console.log("this.canvasX2 =" + this.canvasX2);
+            //     console.log("this.canvasY2 =" + this.canvasY2);
+
+            // this.canvasRenderingContext2D.imageSmoothingEnabled = false;
+
             this.canvasRenderingContext2D.strokeStyle = color;
             this.canvasRenderingContext2D.beginPath();
             this.canvasRenderingContext2D.moveTo(this.canvasX1, this.canvasY1);
@@ -395,7 +352,7 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
         }
 
 
-        
+
     }
 
     /**
@@ -403,9 +360,8 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
      * @param piont {Vector} coordinates
      * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
-    public drawPixelWorld2DCoordinatesFromVector(point: Vector, color: string | CanvasGradient | CanvasPattern): void
-    {
-      //  console.log('parsedData = ' + point.elements[0] + ' , ' + point.elements[1]  );
+    public drawPixelWorld2DCoordinatesFromVector(point: Vector, color: string | CanvasGradient | CanvasPattern): void {
+        //  console.log('parsedData = ' + point.elements[0] + ' , ' + point.elements[1]  );
 
         this.drawPixelWorld2DCoordinates(point.elements[0], point.elements[1], color)
     }
@@ -414,8 +370,7 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
      * draw pixel object
      * @param p {Pixel} pixel to draw
      */
-    public drawPixelWorld2D(p: Pixel): void
-    {
+    public drawPixelWorld2D(p: Pixel): void {
         this.drawPixelWorld2DCoordinates(p.x, p.y, p.color);
     }
 
@@ -425,17 +380,15 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
      * @param y {number} y coordinate
      * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
-    public drawPixelWorld2DCoordinates(x: number, y: number, color: string | CanvasGradient | CanvasPattern): void
-    {
+    public drawPixelWorld2DCoordinates(x: number, y: number, color: string | CanvasGradient | CanvasPattern): void {
         this.canvasX1 = this.range.world2DXtoCanvasX(x);
         this.canvasY1 = this.range.world2DYtoCanvasY(y);
-    //    console.log('X1 = ' + this.canvasX1);
+        //    console.log('X1 = ' + this.canvasX1);
         this.canvasRenderingContext2D.fillStyle = color;
         this.canvasRenderingContext2D.fillRect(this.canvasX1, this.canvasY1, 1, 1);
     }
 
-    public drawPixelCanvas2D(p: Pixel): void
-    {
+    public drawPixelCanvas2D(p: Pixel): void {
         this.canvasRenderingContext2D.fillStyle = p.color;
         this.canvasRenderingContext2D.fillRect(p.x, p.y, 1, 1);
     }
@@ -453,41 +406,40 @@ this.canvasRenderingContext2D.drawImage(image , 0, 0);
      * @param {Vector} P3 Fourth point already transfotmed to Canvas 2D Coordinates
      * @param {string | CanvasGradient | CanvasPattern} color to draw
      */
-    public bezierCurveThrough4Points(P0: Vector, P1: Vector, P2: Vector, P3: Vector, color: string | CanvasGradient | CanvasPattern): void
-    {
+    public bezierCurveThrough4Points(P0: Vector, P1: Vector, P2: Vector, P3: Vector, color: string | CanvasGradient | CanvasPattern): void {
         //use this.controlPoint1 and this.controlPoint2 to hold the control points
         //C0 = P0
         //C1 = (1/9)*( -10*P0 + 24*P1 -  8*P2 +  3*P3 )
         //C2 = (1/9)*(   3*P0 -  8*P1 + 24*P2 - 10*P3 )
         // C3 = P3
-        this.controlPoint1.copyFromVectorWithCoefficientAndLimit( -10, P0, 2); // C1 = -5*P0
+        this.controlPoint1.copyFromVectorWithCoefficientAndLimit(-10, P0, 2); // C1 = -5*P0
         this.controlPoint1.addVectorWithCoefficientAndLimit(24, P1, 2); // C1 = C1 + 18 * P1
-        this.controlPoint1.addVectorWithCoefficientAndLimit( -8, P2, 2); // C1 = C1 - 9 * P2
+        this.controlPoint1.addVectorWithCoefficientAndLimit(-8, P2, 2); // C1 = C1 - 9 * P2
         this.controlPoint1.addVectorWithCoefficientAndLimit(3, P3, 2); // C1 = C1 + 2 * P3
-        this.controlPoint1.multiplyByScalar(1/9); // C1 = C1 / 6
+        this.controlPoint1.multiplyByScalar(1 / 9); // C1 = C1 / 6
 
         this.controlPoint2.copyFromVectorWithCoefficientAndLimit(3, P0, 2); // C2 = 2 * P0
-        this.controlPoint2.addVectorWithCoefficientAndLimit( -8, P1, 2); // C2 = C2 - 9*P1)
-        this.controlPoint2.addVectorWithCoefficientAndLimit(24, P2, 2 ); //C2 = C2 + 18*P2 
-        this.controlPoint2.addVectorWithCoefficientAndLimit( -10, P3, 2 ); //C2 = C2 -5*P3
-        this.controlPoint2.multiplyByScalar(1/9); // C2 = C2 / 6
+        this.controlPoint2.addVectorWithCoefficientAndLimit(-8, P1, 2); // C2 = C2 - 9*P1)
+        this.controlPoint2.addVectorWithCoefficientAndLimit(24, P2, 2); //C2 = C2 + 18*P2 
+        this.controlPoint2.addVectorWithCoefficientAndLimit(-10, P3, 2); //C2 = C2 -5*P3
+        this.controlPoint2.multiplyByScalar(1 / 9); // C2 = C2 / 6
 
         console.log('C2 = ');
         this.controlPoint2.log();
 
         this.canvasRenderingContext2D.strokeStyle = color;
         this.canvasRenderingContext2D.beginPath();
-        this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1] );
-        
+        this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1]);
+
         this.canvasRenderingContext2D.bezierCurveTo(this.controlPoint1.elements[0], this.controlPoint1.elements[1], this.controlPoint2.elements[0], this.controlPoint2.elements[1], P3.elements[0], P3.elements[1]);
-      //  this.canvasRenderingContext2D.bezierCurveTo(0,0, 0, 0, P3.elements[0], P3.elements[1]);
+        //  this.canvasRenderingContext2D.bezierCurveTo(0,0, 0, 0, P3.elements[0], P3.elements[1]);
         this.canvasRenderingContext2D.stroke();
         this.canvasRenderingContext2D.closePath();
-        
+
 
         //move to, then bezier to!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
-       // this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1], 
+        // this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1], 
     }
 
 
