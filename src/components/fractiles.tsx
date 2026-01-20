@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { ThemeState } from '../state/store';
 import { Fractile } from '../models/Fractile';
@@ -6,6 +6,7 @@ import { SirpinskiTriangleFractile } from '../models/SirpinskiTriangleFractle';
 import { FernDotFractile } from '../models/FernDotFractile';
 import { FernLineFractile } from '../models/FernLineFractile';
 import { MandelbrotFractile } from '../models/MandelbrotFractile';
+import { downloadCanvasToPNG } from '../utilities/AudioVideoHelper';
 import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
@@ -17,33 +18,8 @@ fractileMap.set('FernDots', new FernDotFractile());
 fractileMap.set('FernLines', new FernLineFractile());
 fractileMap.set('Mandelbrot', new MandelbrotFractile());
 
-// const overlayImageElement =  document.createElement("img"); //new Image();  //document.getElementById('hiddenImageElementID') as HTMLImageElement;
-// overlayImageElement.setAttribute("id", "hiddenImageElementID");
-// overlayImageElement.src="sun.png";  //Smile.gif`;  //proves texture uv origin is upper lefthand corner like images
-// document.body.appendChild(overlayImageElement); //slows constructor & not needed in Chromium or Firefox
-// //overlayImageElement.style.display = 'none';
-
 let htmlCanvasElement: HTMLCanvasElement = null;
 let mathCanvas: MathCanvas2D = null
-
-function saveCanvas(): void {
-  let filename = 'Canvas.png';
-  let canvasDataURL = htmlCanvasElement.toDataURL('image/png');
-  /* Change MIME type to trick the browser to downlaod the file instead of displaying it */
-  canvasDataURL = canvasDataURL.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
-
-  /* In addition to <a>'s "download" attribute, you can define HTTP-style headers */
-  canvasDataURL = canvasDataURL.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename=' + filename);
-
-  let a = document.createElement('a');
-  a.href = canvasDataURL;
-  //a.download = 'Canvas.png';
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  URL.revokeObjectURL(canvasDataURL);
-  document.body.removeChild(a);
-}
 
 export default function Fractiles() {
   const selectedFractileRef = useRef(null);
@@ -100,7 +76,7 @@ export default function Fractiles() {
       <Menu currentTheme={currentTheme} />
       <Settings />
       <form onSubmit={handleSubmit} className="centeredForm" style={offsetStyle} >
-        <button type="button" className="centeredFormElement" style={{ height: "18px" }} onClick={() => { saveCanvas(); }} >Save </button>
+        <button type="button" className="centeredFormElement" style={{ height: "18px" }} onClick={() => { downloadCanvasToPNG(htmlCanvasElement, 'Canvas.png'); }} >Save </button>
         <button type="button" className="centeredFormElement" onClick={() => { fractileMap?.get(selectedFractileRef?.current?.value)?.stop() }} >
           <img src="stop.png" alt="Stop" className="centeredFormElement" />
         </button>

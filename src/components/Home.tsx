@@ -1,6 +1,6 @@
 import { ThemeState } from '../state/store';
 import { useSelector } from 'react-redux';
-import { download } from '../utilities/file';
+import { downloadText } from '../utilities/AudioVideoHelper';
 import TextEditor from './TextEditor';
 import Menu from './Menu';
 import Settings from './Settings';
@@ -12,7 +12,7 @@ export default function Home() {
       <Menu currentTheme={currentTheme}/>
       <Settings/>
 
-      <TextEditor downloadFunction={download}/>
+      <TextEditor downloadFunction={downloadText}/>
     </div>
   );
 }
