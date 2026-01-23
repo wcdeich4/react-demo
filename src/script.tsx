@@ -7,7 +7,8 @@ import Home from './components/Home';
 import NotFound from './components/NotFound';
 import About from './components/About';
 import ToDo from './components/ToDo';
-import Fractiles from './components/fractiles';
+import Fractiles from './components/Fractiles';
+import Calculus from './components/Calculus';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: '/fractiles',
     element: <Fractiles />,
+  },
+  {
+    path: '/calculus',
+    element: <Calculus />,
   },
   {
     path: '/todo',

@@ -19,6 +19,9 @@ export default function Menu({currentTheme}) {
             <a href="/static.html">Static HTML link</a>
           </li>
           <li>
+            <Link to="/calculus">Calculus</Link>
+          </li>
+          <li>
             <Link to="/fractiles">Fractiles</Link>
           </li>
           <li>

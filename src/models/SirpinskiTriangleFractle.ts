@@ -53,8 +53,6 @@ export class SirpinskiTriangleFractile extends Fractile
     }
 
 
-
-
     public draw(mathCanvas: MathCanvas2D): void
     {
       mathCanvas.backgroundColor = 'black';

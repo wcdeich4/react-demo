@@ -10,6 +10,7 @@ import { downloadCanvasToPNG } from '../utilities/AudioVideoHelper';
 import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
+import stop from '../assets/stop.png';
 
 
 const fractileMap: Map<string, Fractile> = new Map<string, Fractile>();
@@ -78,7 +79,7 @@ export default function Fractiles() {
       <form onSubmit={handleSubmit} className="centeredForm" style={offsetStyle} >
         <button type="button" className="centeredFormElement" style={{ height: "18px" }} onClick={() => { downloadCanvasToPNG(htmlCanvasElement, 'Canvas.png'); }} >Save </button>
         <button type="button" className="centeredFormElement" onClick={() => { fractileMap?.get(selectedFractileRef?.current?.value)?.stop() }} >
-          <img src="stop.png" alt="Stop" className="centeredFormElement" />
+          <img src={stop} alt="Stop" className="centeredFormElement" />
         </button>
         <select id="displaySelect" className="centeredFormElement" style={{ height: "18px" }} ref={selectedFractileRef} >
           <option value="SirpinskiTriangle">SirpinskiTriangle</option>
