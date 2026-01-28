@@ -7,31 +7,37 @@ export class JavascriptStringEvaluator extends MathDrawableBaseClass implements 
 {
     public functionToEvaluate: string;
 
-    constructor(equationText?: string, colorToDraw?: string | CanvasGradient | CanvasPattern, incrementForDrawing?: number)
+    constructor(equationText?: string, 
+                incrementForDrawing?: number, 
+                colorToDraw?: string | CanvasGradient | CanvasPattern,
+                derivative1Color?: string | CanvasGradient | CanvasPattern | undefined,
+                derivative2Color?: string | CanvasGradient | CanvasPattern | undefined,
+                )
     {
-        super(colorToDraw, incrementForDrawing);
+        super(incrementForDrawing, colorToDraw, derivative1Color, derivative2Color);
         if (equationText != null)
         {
             this.functionToEvaluate = equationText;
         }
-
     }
 
 
-    evaluateAtX( X: number): number 
+    public evaluateAtX( X: number): number 
     {
         let expression = this.functionToEvaluate.replace(/X/g, X.toString());
        // console.log(expression);
         return eval(expression);
     }
 
-    evaluateAtXY( X: number, Y: number): number 
+    public evaluateAtXY( X: number, Y: number): number 
     {
         let expression = this.functionToEvaluate.replace(/X/g, X.toString());
         expression = this.functionToEvaluate.replace(/Y/g, Y.toString());
        // console.log(expression);
         return eval(expression);
     }
+
+
 
 
 

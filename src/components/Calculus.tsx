@@ -6,8 +6,6 @@ import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
 import { JavascriptStringEvaluator } from '../math/JavascriptStringEvaluator';
-import { Derivative1 } from '../math/Derivative1';
-import { Derivative2 } from '../math/Derivative2';
 import bad from '../../forbidden.json'; //TODO: make 1 configuration.json file
 
 let htmlCanvasElement: HTMLCanvasElement = null;
@@ -24,12 +22,8 @@ export default function Calculus() {
       }
       else{
         mathCanvas.emptyDrawableArray();
-        const equation = new JavascriptStringEvaluator(equationTextboxRef?.current?.value, 'red');
+        const equation = new JavascriptStringEvaluator(equationTextboxRef?.current?.value, 0.1, 'red', 'green', 'blue');
         mathCanvas.drawableArray.push(equation);
-        const d1 = new Derivative1(equation, 'green', 0.001);
-        mathCanvas.drawableArray.push(d1);
-        const d2 = new Derivative2(equation, 'blue', 0.001);
-        mathCanvas.drawableArray.push(d2);
         mathCanvas.draw();
         //TODO: add legend & integration
       }

@@ -9,9 +9,10 @@ import { MandelbrotFractile } from '../models/MandelbrotFractile';
 import { downloadCanvasToPNG } from '../utilities/AudioVideoHelper';
 import Menu from './Menu';
 import Settings from './Settings';
+import { Vector } from '../math/Vector';
 import { MathCanvas2D } from '../models/MathCanvas2D';
 import stop from '../assets/stop.png';
-
+import sun from '../assets/sun.png';
 
 const fractileMap: Map<string, Fractile> = new Map<string, Fractile>();
 fractileMap.set('SirpinskiTriangle', new SirpinskiTriangleFractile());
@@ -20,7 +21,23 @@ fractileMap.set('FernLines', new FernLineFractile());
 fractileMap.set('Mandelbrot', new MandelbrotFractile());
 
 let htmlCanvasElement: HTMLCanvasElement = null;
-let mathCanvas: MathCanvas2D = null
+let canvasRenderingContext2D: CanvasRenderingContext2D = null;
+let mathCanvas: MathCanvas2D = null;
+const overlayImageElement: HTMLImageElement = document.createElement("img"); //new Image();
+
+function drawoverlay(): void {
+  if(mathCanvas){
+
+//canvasRenderingContext2D.drawImage(overlayImageElement, 0, 0);
+
+    const vector0 = new Vector([10, 10]);
+    const vector1 = new Vector([310, 10]);
+    const vector2 = new Vector([310, 310]);
+    const vector3 = new Vector([10, 310]);
+    const vectorArray = [vector0, vector1, vector2, vector3];
+    mathCanvas.drawImageVarArgCanvasXY(overlayImageElement, ...vectorArray);
+  }
+}
 
 export default function Fractiles() {
   const selectedFractileRef = useRef(null);
@@ -34,6 +51,7 @@ export default function Fractiles() {
     fractileMap?.get(selectedFractileRef?.current?.value)?.onresize(window.innerWidth, window.innerHeight);
     if (mathCanvas) {
       fractileMap?.get(selectedFractileRef?.current?.value)?.draw(mathCanvas);
+      drawoverlay();
     }
     else {
       console.error("mathCanvas is null in windowResizeHandler.");
@@ -44,6 +62,7 @@ export default function Fractiles() {
     e.preventDefault();
     if (mathCanvas) {
       fractileMap?.get(selectedFractileRef?.current?.value)?.draw(mathCanvas);
+      drawoverlay();
     }
     else {
       console.error("mathCanvas is null in handleSubmit.");
@@ -51,22 +70,27 @@ export default function Fractiles() {
   };
 
   useEffect(() => { // This code runs once, after the first render.
-    htmlCanvasElement = canvasRef.current; //get the canvas element
-    if (htmlCanvasElement) {
-      const canvasRenderingContext2D = htmlCanvasElement.getContext('2d');
-      if (canvasRenderingContext2D) {
-        mathCanvas = new MathCanvas2D(canvasRenderingContext2D);
-        windowResizeHandler(); //initial draw
+    
+
+    overlayImageElement.src = sun;
+    overlayImageElement.crossOrigin = "anonymous";
+    overlayImageElement.onload = () => {
+      htmlCanvasElement = canvasRef.current; //get the canvas element
+      if (htmlCanvasElement) {
+        canvasRenderingContext2D = htmlCanvasElement.getContext('2d');
+        if (canvasRenderingContext2D) {
+          mathCanvas = new MathCanvas2D(canvasRenderingContext2D);
+          windowResizeHandler(); //initial draw
+        } else {
+          console.error("canvasRenderingContext2D is null.");
+        }
       } else {
-        console.error("canvasRenderingContext2D is null.");
+        console.error("canvasRef.current is null.");
       }
-    } else {
-      console.error("canvasRef.current is null.");
-    }
+    };
 
     window.addEventListener('resize', windowResizeHandler);
     return () => window.removeEventListener('resize', windowResizeHandler);
-
   }, []); // empty array ensures it only runs on mount
 
 
