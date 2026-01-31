@@ -1,5 +1,6 @@
 import { MathCanvas2D } from "../models/MathCanvas2D";
 import { I2DEquation } from "./I2DEquation";
+import { IIntegralApproximationResult } from "./IIntegralApproximationResult";
 
 export abstract class MathDrawableBaseClass implements I2DEquation {
     public abstract evaluateAtX(x: number): number;
@@ -9,10 +10,12 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
     public derivative1Color?: string | CanvasGradient | CanvasPattern | undefined;
     /**derivative 2 color, will not be drawn if undefined */
     public derivative2Color?: string | CanvasGradient | CanvasPattern | undefined;
+    /** integral color, will not be drawn if undefined */
+    public integralColor: string | CanvasGradient | CanvasPattern | undefined;
     /** drawing step size for x axis */
     public xIncrement: number = 0.1;
-    /** Delta x for numerical difference approximation. Remember javascript minimum delta 0.00000000000000001 */
-    public derivativeDelta: number = 0.001;
+    /** Delta x for derivative & integral approximation. Remember javascript minimum delta 0.00000000000000001 */
+    public calculusDelta: number = 0.001;
 
     /**
      * constructor
@@ -20,11 +23,13 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
      * @param {string | CanvasGradient | CanvasPattern | undefined} equationColor function color
      * @param {string | CanvasGradient | CanvasPattern | undefined} derivative1Color derivative 1 color, will not be drawn if undefined
      * @param {string | CanvasGradient | CanvasPattern | undefined} derivative2Color derivative 2 color, will not be drawn if undefined
+     * @param {string | CanvasGradient | CanvasPattern | undefined} integralColor integration color, will not be drawn if undefined
      */
     constructor(incrementForDrawing?: number,
         equationColor?: string | CanvasGradient | CanvasPattern | undefined,
         derivative1Color?: string | CanvasGradient | CanvasPattern | undefined,
         derivative2Color?: string | CanvasGradient | CanvasPattern | undefined,
+        integralColor?: string | CanvasGradient | CanvasPattern | undefined,
     ) {
         if (equationColor != null) {
             this.color = equationColor;
@@ -38,6 +43,9 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
         if (incrementForDrawing != null) {
             this.xIncrement = incrementForDrawing;
         }
+        if (integralColor != null) {
+            this.integralColor = integralColor;
+        }
     }
 
     /**
@@ -46,16 +54,16 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
      */
     public derivative1AtX(x: number): number {
         //will O(delta^4) approx be too slow?
-        const fxMinusDelta = this.evaluateAtX(x - this.derivativeDelta);
-        const fxMinus2Delta = this.evaluateAtX(x - 2 * this.derivativeDelta);
-        const fxPlusDelta = this.evaluateAtX(x + this.derivativeDelta);
-        const fxPlus2Delta = this.evaluateAtX(x + 2 * this.derivativeDelta);
-        return (8 * fxPlusDelta - 8 * fxMinusDelta + fxMinus2Delta - fxPlus2Delta) / (12 * this.derivativeDelta);
+        const fxMinusDelta = this.evaluateAtX(x - this.calculusDelta);
+        const fxMinus2Delta = this.evaluateAtX(x - 2 * this.calculusDelta);
+        const fxPlusDelta = this.evaluateAtX(x + this.calculusDelta);
+        const fxPlus2Delta = this.evaluateAtX(x + 2 * this.calculusDelta);
+        return (8 * fxPlusDelta - 8 * fxMinusDelta + fxMinus2Delta - fxPlus2Delta) / (12 * this.calculusDelta);
         /*
                  //O(delta^2) approx
-                 const fxMinusDelta = this.evaluateAtX(x - this.derivativeDelta);
-                 const fxPlusDelta = this.evaluateAtX(x + this.derivativeDelta);
-                 return (fxPlusDelta - fxMinusDelta) / (2*this.derivativeDelta);
+                 const fxMinusDelta = this.evaluateAtX(x - this.calculusDelta);
+                 const fxPlusDelta = this.evaluateAtX(x + this.calculusDelta);
+                 return (fxPlusDelta - fxMinusDelta) / (2*this.calculusDelta);
         */
     }
 
@@ -65,12 +73,12 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
      */
     public derivative2AtX(x: number): number {
         //will O(delta^4) approx be too slow?
-        const fxPlus2Delta = this.evaluateAtX(x + 2 * this.derivativeDelta);
-        const fxPlusDelta = this.evaluateAtX(x + this.derivativeDelta);
+        const fxPlus2Delta = this.evaluateAtX(x + 2 * this.calculusDelta);
+        const fxPlusDelta = this.evaluateAtX(x + this.calculusDelta);
         const fxAtX = this.evaluateAtX(x);
-        const fxMinusDelta = this.evaluateAtX(x - this.derivativeDelta);
-        const fxMinus2Delta = this.evaluateAtX(x - 2 * this.derivativeDelta);
-        return (16 * fxPlusDelta - fxPlus2Delta - 30 * fxAtX + 16 * fxMinusDelta - fxMinus2Delta) / (12 * this.derivativeDelta * this.derivativeDelta);
+        const fxMinusDelta = this.evaluateAtX(x - this.calculusDelta);
+        const fxMinus2Delta = this.evaluateAtX(x - 2 * this.calculusDelta);
+        return (16 * fxPlusDelta - fxPlus2Delta - 30 * fxAtX + 16 * fxMinusDelta - fxMinus2Delta) / (12 * this.calculusDelta * this.calculusDelta);
     }
 
     /**
@@ -80,14 +88,37 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
      * @param {number} delta skip btween values
      * @returns {number} sum
      */
-    public getSummationOfSeriesXAxis( start: number, end: number, delta: number ): number 
-    {
+    public getSummationOfSeriesXAxis(start: number, end: number, delta: number): number {
         let sum = 0;
-        for (let i = start; i <= end; i += delta)
-        {
+        for(let i = start; i <= end; i += delta){
             sum += this.evaluateAtX(i);
         }
         return sum;
+    }
+
+    /**
+     * 
+     * @param {number} start beginning of interval
+     * @param {number} end end of interval
+     * @returns {IIntegralApproximationResult} integral approximation results
+     */
+    public getIntegral(start: number, end: number): IIntegralApproximationResult {
+        const left = this.calculusDelta * this.getSummationOfSeriesXAxis(start, end - this.calculusDelta, this.calculusDelta);
+        const right = this.calculusDelta * this.getSummationOfSeriesXAxis(start + this.calculusDelta, end, this.calculusDelta);
+        const middle = this.calculusDelta * this.getSummationOfSeriesXAxis(start + this.calculusDelta / 2, end - this.calculusDelta / 2, this.calculusDelta);
+        const trapezoidalApproximation = (left + right) / 2;
+        const simpsonsApproximation = (2 * middle + trapezoidalApproximation) / 3;
+        const result: IIntegralApproximationResult = {
+            beginInterval: start,
+            endInterval: end,
+            numberOfSubintervals: Math.floor((end - start) / this.calculusDelta),
+            LeftRectangleSum: left,
+            RightRectangleSum: right,
+            MidpointRectangleSum: middle,
+            TrapezoidalSum: trapezoidalApproximation,
+            SimpsonSum: simpsonsApproximation,
+        };
+        return result;
     }
 
     /**
@@ -101,6 +132,13 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
         }
         if (this.derivative2Color) {
             this.drawFunction(mathCanvas, this.derivative2AtX.bind(this), this.derivative2Color);
+        }
+        if (this.integralColor) {
+            let xCurrent: number = mathCanvas.getRange()?.xMin;
+            while (xCurrent <= mathCanvas.getRange()?.xMax) {
+                mathCanvas.drawLineWorld2D(xCurrent, 0, xCurrent, this.evaluateAtX(xCurrent), this.integralColor);
+                xCurrent += this.xIncrement;
+            }
         }
     }
 

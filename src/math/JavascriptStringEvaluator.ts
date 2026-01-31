@@ -7,14 +7,24 @@ export class JavascriptStringEvaluator extends MathDrawableBaseClass implements 
 {
     public functionToEvaluate: string;
 
+    /**
+     * 
+     * @param {string} equationText a one dimentional function in terms of X in Javascript, e.g. "Math.sin(X)"
+     * @param {number} incrementForDrawing X step
+     * @param {string} functionColor color to draw the function
+     * @param {string} derivative1Color color for first derivative (not drawn if undefined)
+     * @param {string} derivative2Color color for second derivative (not drawn if undefined)
+     * @param {string} integralColor color for integral (not drawn if undefined)
+     */
     constructor(equationText?: string, 
                 incrementForDrawing?: number, 
-                colorToDraw?: string | CanvasGradient | CanvasPattern,
+                functionColor?: string | CanvasGradient | CanvasPattern,
                 derivative1Color?: string | CanvasGradient | CanvasPattern | undefined,
                 derivative2Color?: string | CanvasGradient | CanvasPattern | undefined,
+                integralColor?: string | CanvasGradient | CanvasPattern | undefined,
                 )
     {
-        super(incrementForDrawing, colorToDraw, derivative1Color, derivative2Color);
+        super(incrementForDrawing, functionColor, derivative1Color, derivative2Color, integralColor);
         if (equationText != null)
         {
             this.functionToEvaluate = equationText;
