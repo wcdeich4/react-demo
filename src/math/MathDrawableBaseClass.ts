@@ -89,15 +89,23 @@ export abstract class MathDrawableBaseClass implements I2DEquation {
      * @returns {number} sum
      */
     public getSummationOfSeriesXAxis(start: number, end: number, delta: number): number {
-        let sum = 0;
+        let sum: number = 0, currentY: number;
         for(let i = start; i <= end; i += delta){
-            sum += this.evaluateAtX(i);
+            try{
+                currentY = this.evaluateAtX(i);
+            }
+            catch(error: any){
+                currentY = NaN;
+            }
+            if(!isNaN(currentY)){
+                sum += currentY;
+            }
         }
         return sum;
     }
 
     /**
-     * 
+     * Numeric integral approximation using Left Riemann Sum, Right Riemann Sum, Midpoint Riemann Sum, Trapezoidal Rule, and Simpson's Rule
      * @param {number} start beginning of interval
      * @param {number} end end of interval
      * @returns {IIntegralApproximationResult} integral approximation results

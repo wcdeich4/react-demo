@@ -10,8 +10,8 @@ export class Vector implements ICloneable<Vector>
     public elements: number[];
     /**
      * constructor
-     * @param array1D array of numbers or null
-     * @param numberOfElement number or null
+     * @param {Array<number>|null} array1D array of numbers or null
+     * @param {number|null} numberOfElement number or null
      */
     constructor(array1D:Array<number>|null = null, numberOfElements: number|null = null)
     {

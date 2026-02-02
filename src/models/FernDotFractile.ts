@@ -1,7 +1,7 @@
 import { MathCanvas2D } from "./MathCanvas2D";
 import { Fractile } from "./Fractile";
 import { ScreenRangeConverter2D } from "../math/ScreenRangeConverter2D";
-import { Vector } from "../math/Vector";
+import { ColorVector } from "./ColorVector";
 
 /**
  * https://spanishplus.tripod.com/maths/FractalBarnsley.htm
@@ -13,17 +13,7 @@ export class FernDotFractile extends Fractile {
     super();
     this.calculated = true;
     this.range = new ScreenRangeConverter2D(-2.1818, 3.76, 0, 10);
-    // this.range.log();
   }
-
-  // public disposeOfWorker(): void
-  // {
-  //   if (this.worker != undefined && this.worker != null)
-  //   {
-  //     this.worker.terminate();
-  //     this.worker = undefined;
-  //   }
-  // }
 
   public draw(mathCanvas: MathCanvas2D): void {
     if (typeof this.range == 'undefined' || this.range == null) {
@@ -60,28 +50,15 @@ export class FernDotFractile extends Fractile {
 
       //max time to let worker run
       setTimeout(function () {
-        //this.disposeOfWorker(); //ERROR: TypeError this.disposeOfWorker() is not a function 
         if (this.worker != undefined && this.worker != null) {
           console.log('terminating worker');
-          // this.worker.terminate();
-          // this.worker = undefined;
           this.disposeOfWorker();
         }
       }, 30000);
 
 
       this.worker.onmessage = ({ data }) => {
-
-        let parsedData = JSON.parse(data) as Vector;
-        //  console.log(parsedData);
-
-        //   if (parsedData.range != undefined)
-        //   {
-        //     this.range = parsedData.range;
-        //     //this.range.log(); //error here
-        //     console.log('set range: ' );
-        //     console.log(this.range);
-        //   }
+        let parsedData = JSON.parse(data) as ColorVector;
 
         if (parsedData == undefined) {
           console.log('parsedData == undefined')
@@ -93,7 +70,7 @@ export class FernDotFractile extends Fractile {
 
         else //if (parsedData.dot != undefined)
         {
-          mathCanvas.drawPixelWorld2DCoordinatesFromVector(parsedData, '#00FF00');
+          mathCanvas.drawPixelWorld2DCoordinatesFromVector(parsedData, parsedData.color);
         }
       };
       this.worker.postMessage('message sent from FernDotFractile.ts to worker');

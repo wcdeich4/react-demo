@@ -9,6 +9,7 @@ import About from './components/About';
 import ToDo from './components/ToDo';
 import Fractiles from './components/Fractiles';
 import Calculus from './components/Calculus';
+import Scene3D from './components/Scene3D';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/calculus',
     element: <Calculus />,
+  },
+  {
+    path: '/scene',
+    element: <Scene3D />,
   },
   {
     path: '/todo',

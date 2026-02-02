@@ -13,6 +13,8 @@ import { Vector } from '../math/Vector';
 import { MathCanvas2D } from '../models/MathCanvas2D';
 import stop from '../assets/stop.png';
 import sun from '../assets/sun.png';
+import { Point2D } from '../math/Point2D';
+import { Coordinate } from '../models/Coordinate';
 
 const fractileMap: Map<string, Fractile> = new Map<string, Fractile>();
 fractileMap.set('SirpinskiTriangle', new SirpinskiTriangleFractile());
@@ -27,15 +29,12 @@ const overlayImageElement: HTMLImageElement = document.createElement("img"); //n
 
 function drawoverlay(): void {
   if(mathCanvas){
-
-//canvasRenderingContext2D.drawImage(overlayImageElement, 0, 0);
-
-    const vector0 = new Vector([10, 10]);
-    const vector1 = new Vector([310, 10]);
-    const vector2 = new Vector([310, 310]);
-    const vector3 = new Vector([10, 310]);
-    const vectorArray = [vector0, vector1, vector2, vector3];
-    mathCanvas.drawImageVarArgCanvasXY(overlayImageElement, ...vectorArray);
+    const coordinate0 = new Coordinate(new Vector([10, 10]), null, new Point2D(0, 0));
+    const coordinate1 = new Coordinate(new Vector([310, 10]), null, new Point2D(1, 0));
+    const coordinate2 = new Coordinate(new Vector([310, 310]), null, new Point2D(1, 1));
+    const coordinate3 = new Coordinate(new Vector([10, 310]), null, new Point2D(0, 1));
+    const coordinateArray = [coordinate0, coordinate1, coordinate2, coordinate3];
+    mathCanvas.drawImageVarArgCanvasXY(overlayImageElement, coordinateArray);
   }
 }
 

@@ -1,5 +1,6 @@
 import { Vector } from '../math/Vector';
 import { Matrix } from "../math/Matrix";
+import { ColorVector } from './ColorVector';
 /// <reference lib="webworker" />
 
 addEventListener('message', ({ data }) => {
@@ -15,28 +16,33 @@ const largeRightLeafletMatrix = new Matrix([[-0.15, 0.28],[0.26, 0.24]]);
 const largeRightLeafletOffsetVector = new Vector([0, 0.44]);
 
 let randomValue: number = 0;
-let currentPoint = new Vector([0, 0]);
+let currentPoint = new ColorVector([0, 0]);
+currentPoint.color = 'green';
 let i:number = 0;
 while (i < 60000 )
 {
     if (randomValue < 0.01) 
     {
-        currentPoint = stemMatrix.multiplyByVectorOnRight(currentPoint);
+        stemMatrix.transformVectorOnRight(currentPoint);
+        currentPoint.color = 'brown';
     }
     else if (randomValue < 0.86)
     {
-        currentPoint = smallLeafletMatrix.multiplyByVectorOnRight(currentPoint);
+        smallLeafletMatrix.transformVectorOnRight(currentPoint);
         currentPoint.add(smallLeafletOffsetVector);
+        currentPoint.color = '#00FF80';
     }
     else if (randomValue < 0.93)
     {
-        currentPoint = largeLeftLeafletMatrix.multiplyByVectorOnRight(currentPoint);
+        largeLeftLeafletMatrix.transformVectorOnRight(currentPoint);
         currentPoint.add(largeLeftLeafletOffsetVector);
+        currentPoint.color = '#00FF70';
     }
     else 
     {
-        currentPoint = largeRightLeafletMatrix.multiplyByVectorOnRight(currentPoint);
+        largeRightLeafletMatrix.transformVectorOnRight(currentPoint);
         currentPoint.add(largeRightLeafletOffsetVector);
+        currentPoint.color = '#00FF70';
     }
     i++;
     randomValue = Math.random();

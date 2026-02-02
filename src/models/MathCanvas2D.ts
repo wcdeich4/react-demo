@@ -3,6 +3,8 @@ import { Vector } from '../math/Vector';
 import { IMathDrawable } from './IMathDrawable';
 import { Pixel } from './Pixel';
 import { ScreenRangeConverter2D } from '../math/ScreenRangeConverter2D';
+import { Coordinate } from './Coordinate';
+import { Circle } from './Circle';
 
 export class MathCanvas2D {
     public range: ScreenRangeConverter2D;
@@ -142,7 +144,6 @@ export class MathCanvas2D {
     }
 
 
-
     public AutoScaleWidthToMatchHeight(): void {
         //TODO: handle non-centered ranges
         let widthOverHeight: number = this.canvasRenderingContext2D.canvas.width / this.canvasRenderingContext2D.canvas.height;
@@ -150,7 +151,6 @@ export class MathCanvas2D {
         this.range.xMin = this.range.yMin * widthOverHeight;
         this.onresize();
     }
-
 
     /**
      * clear contents of the canvas
@@ -161,16 +161,15 @@ export class MathCanvas2D {
 
     /**
      * draw triangle in World 2D coordinates
-     * @param x1 x coordinate 1
-     * @param y1 y coordinate 1
-     * @param x2 x coordinate 2
-     * @param y2 y coordinate 2
-     * @param x3 x coordinate 3
-     * @param y3 y coordinate 3
-     * @param color {string | CanvasGradient | CanvasPattern} fill style
+     * @param {number} x1 x-coordinate 1
+     * @param {number} y1 y-coordinate 1
+     * @param {number} x2 x-coordinate 2
+     * @param {number} y2 y-coordinate 2
+     * @param {number} x3 x-coordinate 3
+     * @param {number} y3 y-coordinate 3
+     * @param {string | CanvasGradient | CanvasPattern} color fill style
      */
     public drawTriangleWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string | CanvasGradient | CanvasPattern): void {
-
         let drawLineInstead: boolean = this.applySafetyChecks && AreCoLinear.twoDimensional(x1, y1, x2, y2, x3, y3);
         if (drawLineInstead) {
             //Even thought these points are co-linear, there is no guarantee what order they are in, so we don't know which point is the one in the middle, and doing the math to find the point in the middle woudl take more time than just drawing two line segments
@@ -204,13 +203,13 @@ export class MathCanvas2D {
 
     /**
      * draw triangle outline in World 2D coordinates
-     * @param x1 x coordinate 1
-     * @param y1 y coordinate 1
-     * @param x2 x coordinate 2
-     * @param y2 y coordinate 2
-     * @param x3 x coordinate 3
-     * @param y3 y coordinate 3
-     * @param color {string | CanvasGradient | CanvasPattern} fill style
+     * @param {number} x1 x-coordinate 1
+     * @param {number} y1 y-coordinate 1
+     * @param {number} x2 x-coordinate 2
+     * @param {number} y2 y-coordinate 2
+     * @param {number} x3 x-coordinate 3
+     * @param {number} y3 y-coordinate 3
+     * @param {string | CanvasGradient | CanvasPattern} color fill style
      */
     public drawTriangleOutlineWorld2D(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string | CanvasGradient | CanvasPattern): void {
         this.drawLineWorld2D(x1, y1, x2, y2, color);
@@ -222,47 +221,40 @@ export class MathCanvas2D {
      * draw line segment array of verticies in world 2D
      * For speed sake, no safety checks are done
      * @param {string | CanvasGradient | CanvasPattern} color stroke style
-     * @param {...Array<Vector>} vertexArray Array of Vector
+     * @param {...Array<Vector>} coordinateArray Array of Vector
      */
-    public drawLineSegmentVertexArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...vertexArray: Array<Vector>): void {
-        for (let i = 0; i < vertexArray.length - 1; i++) {
-            //  this.controlPoint1 = vertexArray[i];
-            //  this.controlPoint2 = vertexArray[i + 1];
-            this.drawLineWorld2D(vertexArray[i].elements[0], vertexArray[i].elements[1], vertexArray[i + 1].elements[0], vertexArray[i + 1].elements[1], color);
+    public drawLineSegmentcoordinateArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...coordinateArray: Array<Vector>): void {
+        for (let i = 0; i < coordinateArray.length - 1; i++) {
+            this.drawLineWorld2D(coordinateArray[i].elements[0], coordinateArray[i].elements[1], coordinateArray[i + 1].elements[0], coordinateArray[i + 1].elements[1], color);
         }
     }
-
-
 
     //refrences: 
     //https://stackoverflow.com/questions/4774172/image-mapping-in-canvas
     //https://www.youtube.com/watch?v=XHT23NnW-EY
     //https://github.com/FuzzyCat444/Simple3DJavaScript
     //https://www.youtube.com/watch?v=1pGowJqNmH0
-    public drawImageVarArgCanvasXY(image: HTMLImageElement, ...vertexArray: Array<Vector>): void { //TODO: put TextureCoordinatePercent into parameters
-        //texture uv origin is upper lefthand corner like images
-        var XTextureCoordinatePercent0 = 0, YTextureCoordinatePercent0 = 0;
-        var XTextureCoordinatePercent1 = 1, YTextureCoordinatePercent1 = 0;
-        var XTextureCoordinatePercent2 = 1, YTextureCoordinatePercent2 = 1;
+    public drawImageVarArgCanvasXY(image: HTMLImageElement, coordinateArray: Array<Coordinate>): void { 
+        const u0 = coordinateArray[0].texturePercentage.x * image.width;
+        const v0 = coordinateArray[0].texturePercentage.y * image.height;
+        const x0 = coordinateArray[0].vertex.elements[0];
+        const y0 = coordinateArray[0].vertex.elements[1];
 
-        var u0 = XTextureCoordinatePercent0 * image.width,
-            v0 = YTextureCoordinatePercent0 * image.height;
-        var x0 = vertexArray[0].elements[0];
-        var y0 = vertexArray[0].elements[1];
-        var u1 = XTextureCoordinatePercent1 * image.width,
-            v1 = YTextureCoordinatePercent1 * image.height;
-        var x1 = vertexArray[1].elements[0];
-        var y1 = vertexArray[1].elements[1];
-        var u2 = XTextureCoordinatePercent2 * image.width,
-            v2 = YTextureCoordinatePercent2 * image.height;
-        var x2 = vertexArray[2].elements[0];
-        var y2 = vertexArray[2].elements[1];
+        const u1 = coordinateArray[1].texturePercentage.x * image.width;
+        const v1 = coordinateArray[1].texturePercentage.y * image.height;
+        const x1 = coordinateArray[1].vertex.elements[0];
+        const y1 = coordinateArray[1].vertex.elements[1];
+
+        const u2 = coordinateArray[2].texturePercentage.x * image.width;
+        const v2 = coordinateArray[2].texturePercentage.y * image.height;
+        const x2 = coordinateArray[2].vertex.elements[0];
+        const y2 = coordinateArray[2].vertex.elements[1];
 
         this.canvasRenderingContext2D.save();
         this.canvasRenderingContext2D.beginPath();
-        this.canvasRenderingContext2D.moveTo(vertexArray[0].elements[0], vertexArray[0].elements[1]);
-        for (let i = 1; i < vertexArray.length; i++) {
-            this.canvasRenderingContext2D.lineTo(vertexArray[i].elements[0], vertexArray[i].elements[1]);
+        this.canvasRenderingContext2D.moveTo(coordinateArray[0].vertex.elements[0], coordinateArray[0].vertex.elements[1]);
+        for (let i = 1; i < coordinateArray.length; i++) {
+            this.canvasRenderingContext2D.lineTo(coordinateArray[i].vertex.elements[0], coordinateArray[i].vertex.elements[1]);
         }
         this.canvasRenderingContext2D.closePath();
         this.canvasRenderingContext2D.clip();
@@ -283,8 +275,6 @@ export class MathCanvas2D {
         this.canvasRenderingContext2D.restore();
     }
 
-
-
     /**
      * draw line in World 2D coordinates
      * @param x1 x coordinate 1
@@ -302,14 +292,9 @@ export class MathCanvas2D {
         else {
             this.canvasX1 = this.range.world2DXtoCanvasX(x1);
             this.canvasY1 = this.range.world2DYtoCanvasY(y1);
-            //   console.log("this.canvasY1 =" + this.canvasY1);
 
             this.canvasX2 = this.range.world2DXtoCanvasX(x2);
             this.canvasY2 = this.range.world2DYtoCanvasY(y2);
-            //   console.log("this.canvasX2 =" + this.canvasX2);
-            //     console.log("this.canvasY2 =" + this.canvasY2);
-
-            // this.canvasRenderingContext2D.imageSmoothingEnabled = false;
 
             this.canvasRenderingContext2D.strokeStyle = color;
             this.canvasRenderingContext2D.beginPath();
@@ -317,25 +302,20 @@ export class MathCanvas2D {
             this.canvasRenderingContext2D.lineTo(this.canvasX2, this.canvasY2);
             this.canvasRenderingContext2D.stroke();
         }
-
-
-
     }
 
     /**
      * fill a single pixel in World 2D coordinates from Vector
-     * @param piont {Vector} coordinates
-     * @param color {string | CanvasGradient | CanvasPattern} fill style
+     * @param {Vector} point coordinates
+     * @param {string | CanvasGradient | CanvasPattern} color fill style
      */
     public drawPixelWorld2DCoordinatesFromVector(point: Vector, color: string | CanvasGradient | CanvasPattern): void {
-        //  console.log('parsedData = ' + point.elements[0] + ' , ' + point.elements[1]  );
-
         this.drawPixelWorld2DCoordinates(point.elements[0], point.elements[1], color)
     }
 
     /**
      * draw pixel object
-     * @param p {Pixel} pixel to draw
+     * @param {Pixel} p pixel to draw
      */
     public drawPixelWorld2D(p: Pixel): void {
         this.drawPixelWorld2DCoordinates(p.x, p.y, p.color);
@@ -343,8 +323,8 @@ export class MathCanvas2D {
 
     /**
      * fill a single pixel in World 2D coordinates
-     * @param x {number} x coordinate
-     * @param y {number} y coordinate
+     * @param {number} x x-coordinate
+     * @param {number} y y-coordinate
      * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
     public drawPixelWorld2DCoordinates(x: number, y: number, color: string | CanvasGradient | CanvasPattern): void {
@@ -353,6 +333,19 @@ export class MathCanvas2D {
         //    console.log('X1 = ' + this.canvasX1);
         this.canvasRenderingContext2D.fillStyle = color;
         this.canvasRenderingContext2D.fillRect(this.canvasX1, this.canvasY1, 1, 1);
+    }
+
+    /**
+     * draw circle in World 2D coordinates
+     * @param {Circle} circle object to draw
+     */
+    public drawCircleWorld2DCoordinates(circle: Circle): void {
+        this.canvasX1 = this.range.world2DXtoCanvasX(circle.elements[0]);
+        this.canvasY1 = this.range.world2DYtoCanvasY(circle.elements[1]);  
+        this.canvasRenderingContext2D.fillStyle = circle.color;
+        this.canvasRenderingContext2D.beginPath();
+        this.canvasRenderingContext2D.arc(this.canvasX1, this.canvasY1, circle.radius, 0, 2 * Math.PI);
+        this.canvasRenderingContext2D.fill();
     }
 
     public drawPixelCanvas2D(p: Pixel): void {

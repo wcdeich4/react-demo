@@ -25,6 +25,9 @@ export default function Menu({currentTheme}) {
             <Link to="/fractiles">Fractiles</Link>
           </li>
           <li>
+            <Link to="/scene">Scene</Link>
+          </li>
+          <li>
             <Link to={`/about/${aboutParameter}`}>About</Link>
           </li>
         </ul>
