@@ -6,9 +6,8 @@ import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
 import { Renderer3D } from '../models/Renderer3D';
-import { Vector } from '../math/Vector';
+import { Point3D } from '../math/Point3D';
 import { Matrix } from '../math/Matrix';
-import { ColorVector } from '../models/ColorVector';
 import { Circle } from '../models/Circle';
 
 let htmlCanvasElement: HTMLCanvasElement = null;
@@ -22,7 +21,7 @@ export default function Scene3D() {
     if(mathCanvas){
       mathCanvas.draw();
 
-      const p = new Circle([1, 1, 1], null, '#FF0000', 2);
+      const p = new Circle(0, 0, 0, '#FF0000', 2);
       renderer.drawCircle(p); //only comes up on resize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
     else {
@@ -48,9 +47,9 @@ export default function Scene3D() {
         mathCanvas.setRangeValues(-10, 10, -10.0, 10.0);
         mathCanvas.drawAxies2D = false;
 
-        const cameraPosition = new Vector([10, 10, 10]); //TODO: make adjustable or in settings file
-        const focalPoint = new Vector([0, 0, 0]);
-        const upVector = new Vector([0, 0, 1]);
+        const cameraPosition = new Point3D(10, 10, 10); //TODO: make adjustable or in settings file
+        const focalPoint = new Point3D(0, 0, 0);
+        const upVector = new Point3D(0, 0, 1);
         const perspectiveMatrix = new Matrix(null, 4, 4);
         perspectiveMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
 

@@ -1,7 +1,7 @@
 import { MathCanvas2D } from "./MathCanvas2D";
 import { Fractile } from "./Fractile";
 import { ScreenRangeConverter2D } from "../math/ScreenRangeConverter2D";
-import { ColorVector } from "./ColorVector";
+import { Pixel } from "./Pixel";
 
 /**
  * https://spanishplus.tripod.com/maths/FractalBarnsley.htm
@@ -58,7 +58,7 @@ export class FernDotFractile extends Fractile {
 
 
       this.worker.onmessage = ({ data }) => {
-        let parsedData = JSON.parse(data) as ColorVector;
+        let parsedData = JSON.parse(data) as Pixel;
 
         if (parsedData == undefined) {
           console.log('parsedData == undefined')
@@ -70,7 +70,7 @@ export class FernDotFractile extends Fractile {
 
         else //if (parsedData.dot != undefined)
         {
-          mathCanvas.drawPixelWorld2DCoordinatesFromVector(parsedData, parsedData.color);
+          mathCanvas.drawPixelWorld2D(parsedData);
         }
       };
       this.worker.postMessage('message sent from FernDotFractile.ts to worker');

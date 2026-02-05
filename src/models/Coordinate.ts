@@ -1,11 +1,11 @@
 import { Point2D } from "../math/Point2D";
-import { Vector } from "../math/Vector";
+import { Point3D } from "../math/Point3D";
 
 export class Coordinate{
-  public vertex: Vector;
-  public normal: Vector;
+  public vertex: Point3D;
+  public normal: Point3D;
   public texturePercentage: Point2D;
-  constructor(position?: Vector, perpendicular?: Vector, uvPercentage?: Point2D){
+  constructor(position?: Point3D, perpendicular?: Point3D, uvPercentage?: Point2D){
     if(position){
       this.vertex = position;
     }

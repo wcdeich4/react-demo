@@ -1,5 +1,5 @@
 import { AreCoLinear } from '../math/AreCoLinear';
-import { Vector } from '../math/Vector';
+import { Point2D } from '../math/Point2D';
 import { IMathDrawable } from './IMathDrawable';
 import { Pixel } from './Pixel';
 import { ScreenRangeConverter2D } from '../math/ScreenRangeConverter2D';
@@ -15,8 +15,8 @@ export class MathCanvas2D {
     public backgroundColor: string | CanvasGradient | CanvasPattern | null = null;
     public drawableArray: Array<IMathDrawable> = new Array<IMathDrawable>();
     public canvasRenderingContext2D: CanvasRenderingContext2D;
-    private controlPoint1: Vector;
-    private controlPoint2: Vector;
+    private controlPoint1: Point2D;
+    private controlPoint2: Point2D;
 
     //prevent new variable instantiation to save precious memory fps
     // private xAspectRatio: number = 0;
@@ -34,8 +34,8 @@ export class MathCanvas2D {
             this.setRange(canvasRange);
         }
         this.backgroundColor = backgroundColor;
-        this.controlPoint1 = new Vector([0, 0]);
-        this.controlPoint2 = new Vector([0, 0]);
+        this.controlPoint1 = new Point2D(0, 0);
+        this.controlPoint2 = new Point2D(0, 0);
     }
 
     /**
@@ -221,11 +221,11 @@ export class MathCanvas2D {
      * draw line segment array of verticies in world 2D
      * For speed sake, no safety checks are done
      * @param {string | CanvasGradient | CanvasPattern} color stroke style
-     * @param {...Array<Vector>} coordinateArray Array of Vector
+     * @param {...Array<Point2D>} coordinateArray Array of Point2D
      */
-    public drawLineSegmentcoordinateArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...coordinateArray: Array<Vector>): void {
+    public drawLineSegmentcoordinateArrayWorld2D(color: string | CanvasGradient | CanvasPattern, ...coordinateArray: Array<Point2D>): void {
         for (let i = 0; i < coordinateArray.length - 1; i++) {
-            this.drawLineWorld2D(coordinateArray[i].elements[0], coordinateArray[i].elements[1], coordinateArray[i + 1].elements[0], coordinateArray[i + 1].elements[1], color);
+            this.drawLineWorld2D(coordinateArray[i].x, coordinateArray[i].y, coordinateArray[i + 1].x, coordinateArray[i + 1].y, color);
         }
     }
 
@@ -237,24 +237,24 @@ export class MathCanvas2D {
     public drawImageVarArgCanvasXY(image: HTMLImageElement, coordinateArray: Array<Coordinate>): void { 
         const u0 = coordinateArray[0].texturePercentage.x * image.width;
         const v0 = coordinateArray[0].texturePercentage.y * image.height;
-        const x0 = coordinateArray[0].vertex.elements[0];
-        const y0 = coordinateArray[0].vertex.elements[1];
+        const x0 = coordinateArray[0].vertex.x;
+        const y0 = coordinateArray[0].vertex.y;
 
         const u1 = coordinateArray[1].texturePercentage.x * image.width;
         const v1 = coordinateArray[1].texturePercentage.y * image.height;
-        const x1 = coordinateArray[1].vertex.elements[0];
-        const y1 = coordinateArray[1].vertex.elements[1];
+        const x1 = coordinateArray[1].vertex.x;
+        const y1 = coordinateArray[1].vertex.y;
 
         const u2 = coordinateArray[2].texturePercentage.x * image.width;
         const v2 = coordinateArray[2].texturePercentage.y * image.height;
-        const x2 = coordinateArray[2].vertex.elements[0];
-        const y2 = coordinateArray[2].vertex.elements[1];
+        const x2 = coordinateArray[2].vertex.x;
+        const y2 = coordinateArray[2].vertex.y;
 
         this.canvasRenderingContext2D.save();
         this.canvasRenderingContext2D.beginPath();
-        this.canvasRenderingContext2D.moveTo(coordinateArray[0].vertex.elements[0], coordinateArray[0].vertex.elements[1]);
+        this.canvasRenderingContext2D.moveTo(coordinateArray[0].vertex.x, coordinateArray[0].vertex.y);
         for (let i = 1; i < coordinateArray.length; i++) {
-            this.canvasRenderingContext2D.lineTo(coordinateArray[i].vertex.elements[0], coordinateArray[i].vertex.elements[1]);
+            this.canvasRenderingContext2D.lineTo(coordinateArray[i].vertex.x, coordinateArray[i].vertex.y);
         }
         this.canvasRenderingContext2D.closePath();
         this.canvasRenderingContext2D.clip();
@@ -305,12 +305,12 @@ export class MathCanvas2D {
     }
 
     /**
-     * fill a single pixel in World 2D coordinates from Vector
-     * @param {Vector} point coordinates
+     * fill a single pixel in World 2D coordinates from Point2D
+     * @param {Point2D} point coordinates
      * @param {string | CanvasGradient | CanvasPattern} color fill style
      */
-    public drawPixelWorld2DCoordinatesFromVector(point: Vector, color: string | CanvasGradient | CanvasPattern): void {
-        this.drawPixelWorld2DCoordinates(point.elements[0], point.elements[1], color)
+    public drawPixelWorld2DCoordinatesFromPoint2D(point: Point2D, color: string | CanvasGradient | CanvasPattern): void {
+        this.drawPixelWorld2DCoordinates(point.x, point.y, color)
     }
 
     /**
@@ -340,8 +340,8 @@ export class MathCanvas2D {
      * @param {Circle} circle object to draw
      */
     public drawCircleWorld2DCoordinates(circle: Circle): void {
-        this.canvasX1 = this.range.world2DXtoCanvasX(circle.elements[0]);
-        this.canvasY1 = this.range.world2DYtoCanvasY(circle.elements[1]);  
+        this.canvasX1 = this.range.world2DXtoCanvasX(circle.x);
+        this.canvasY1 = this.range.world2DYtoCanvasY(circle.y);  
         this.canvasRenderingContext2D.fillStyle = circle.color;
         this.canvasRenderingContext2D.beginPath();
         this.canvasRenderingContext2D.arc(this.canvasX1, this.canvasY1, circle.radius, 0, 2 * Math.PI);
@@ -360,46 +360,43 @@ export class MathCanvas2D {
      * https://www.codeproject.com/Articles/31859/Draw-a-Smooth-Curve-through-a-Set-of-2D-Points-wit
      * https://people.math.sc.edu/Burkardt/f_src/spline/spline.html
      * https://math.stackexchange.com/questions/301736/how-do-i-find-a-bezier-curve-that-goes-through-a-series-of-points
-     * @param {Vector} P0 First point already transfotmed to Canvas 2D Coordinates
-     * @param {Vector} P1 Second point already transfotmed to Canvas 2D Coordinates
-     * @param {Vector} P2 Third point already transfotmed to Canvas 2D Coordinates
-     * @param {Vector} P3 Fourth point already transfotmed to Canvas 2D Coordinates
+     * @param {Point2D} P0 First point already transfotmed to Canvas 2D Coordinates
+     * @param {Point2D} P1 Second point already transfotmed to Canvas 2D Coordinates
+     * @param {Point2D} P2 Third point already transfotmed to Canvas 2D Coordinates
+     * @param {Point2D} P3 Fourth point already transfotmed to Canvas 2D Coordinates
      * @param {string | CanvasGradient | CanvasPattern} color to draw
      */
-    public bezierCurveThrough4Points(P0: Vector, P1: Vector, P2: Vector, P3: Vector, color: string | CanvasGradient | CanvasPattern): void {
+    public bezierCurveThrough4Points(P0: Point2D, P1: Point2D, P2: Point2D, P3: Point2D, color: string | CanvasGradient | CanvasPattern): void {
         //use this.controlPoint1 and this.controlPoint2 to hold the control points
         //C0 = P0
         //C1 = (1/9)*( -10*P0 + 24*P1 -  8*P2 +  3*P3 )
         //C2 = (1/9)*(   3*P0 -  8*P1 + 24*P2 - 10*P3 )
         // C3 = P3
-        this.controlPoint1.copyFromVectorWithCoefficientAndLimit(-10, P0, 2); // C1 = -5*P0
-        this.controlPoint1.addVectorWithCoefficientAndLimit(24, P1, 2); // C1 = C1 + 18 * P1
-        this.controlPoint1.addVectorWithCoefficientAndLimit(-8, P2, 2); // C1 = C1 - 9 * P2
-        this.controlPoint1.addVectorWithCoefficientAndLimit(3, P3, 2); // C1 = C1 + 2 * P3
+        this.controlPoint1.copyFromPoint2DWithCoefficient(-10, P0); // C1 = -10*P0
+        this.controlPoint1.addPoint2DWithCoefficient(24, P1); // C1 = C1 + 24 * P1
+        this.controlPoint1.addPoint2DWithCoefficient(-8, P2); // C1 = C1 - 8 * P2
+        this.controlPoint1.addPoint2DWithCoefficient(3, P3); // C1 = C1 + 3 * P3
         this.controlPoint1.multiplyByScalar(1 / 9); // C1 = C1 / 6
 
-        this.controlPoint2.copyFromVectorWithCoefficientAndLimit(3, P0, 2); // C2 = 2 * P0
-        this.controlPoint2.addVectorWithCoefficientAndLimit(-8, P1, 2); // C2 = C2 - 9*P1)
-        this.controlPoint2.addVectorWithCoefficientAndLimit(24, P2, 2); //C2 = C2 + 18*P2 
-        this.controlPoint2.addVectorWithCoefficientAndLimit(-10, P3, 2); //C2 = C2 -5*P3
+        this.controlPoint2.copyFromPoint2DWithCoefficient(3, P0); // C2 = 2 * P0
+        this.controlPoint2.addPoint2DWithCoefficient(-8, P1); // C2 = C2 - 8*P1) //limit was 2 ...............
+        this.controlPoint2.addPoint2DWithCoefficient(24, P2); //C2 = C2 + 34*P2 
+        this.controlPoint2.addPoint2DWithCoefficient(-10, P3); //C2 = C2 -10*P3
         this.controlPoint2.multiplyByScalar(1 / 9); // C2 = C2 / 6
-
-        console.log('C2 = ');
-        this.controlPoint2.log();
 
         this.canvasRenderingContext2D.strokeStyle = color;
         this.canvasRenderingContext2D.beginPath();
-        this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1]);
+        this.canvasRenderingContext2D.moveTo(P0.x, P0.y);
 
-        this.canvasRenderingContext2D.bezierCurveTo(this.controlPoint1.elements[0], this.controlPoint1.elements[1], this.controlPoint2.elements[0], this.controlPoint2.elements[1], P3.elements[0], P3.elements[1]);
-        //  this.canvasRenderingContext2D.bezierCurveTo(0,0, 0, 0, P3.elements[0], P3.elements[1]);
+        this.canvasRenderingContext2D.bezierCurveTo(this.controlPoint1.x, this.controlPoint1.y, this.controlPoint2.x, this.controlPoint2.y, P3.x, P3.y);
+        //  this.canvasRenderingContext2D.bezierCurveTo(0,0, 0, 0, P3.x, P3.y);
         this.canvasRenderingContext2D.stroke();
         this.canvasRenderingContext2D.closePath();
 
 
         //move to, then bezier to!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
-        // this.canvasRenderingContext2D.moveTo(P0.elements[0], P0.elements[1], 
+        // this.canvasRenderingContext2D.moveTo(P0.x, P0.y, 
     }
 
 

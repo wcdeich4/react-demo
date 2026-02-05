@@ -80,7 +80,7 @@ export abstract class OBJHelper
     //                   for (let index = 1; index < currentLineTokens.length; index++) 
     //                   {
     //                     //use x y class?
-    //                     //add    public setFromOJFileLine(line: string): string  method to RealNumberVector.ts????
+    //                     //add    public setFromOJFileLine(line: string): string  method to RealNumberPoint3D.ts????
     //                     //or make it more generic ?
     //                     temporaryTextureCoordinateArray.push(parseFloat(currentLineTokens[index]));
                         
@@ -99,7 +99,7 @@ export abstract class OBJHelper
     //               {
     //                 if (currentLineTokens.length != 4)
     //                 {
-    //                   throw new Error('line ' + i + ' has ' + currentLineTokens.length + ' whitespace separated tokens, which is not valid for a normal vector line in an obj file');
+    //                   throw new Error('line ' + i + ' has ' + currentLineTokens.length + ' whitespace separated tokens, which is not valid for a normal Point3D line in an obj file');
     //                 }
     //                 try 
     //                 {
@@ -114,7 +114,7 @@ export abstract class OBJHelper
     //                 } 
     //                 catch (error) 
     //                 {
-    //                   throw new Error('Error pushing normal vector data into normalArray.  Data line: ' + linesArray[i] + ' Error: ' + error.message); //re-throw with more info
+    //                   throw new Error('Error pushing normal Point3D data into normalArray.  Data line: ' + linesArray[i] + ' Error: ' + error.message); //re-throw with more info
     //                 }
     //               }
 

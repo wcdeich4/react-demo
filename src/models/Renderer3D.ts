@@ -1,6 +1,6 @@
 import { Matrix } from "../math/Matrix";
 import { Circle } from "./Circle";
-import { ColorVector } from "./ColorVector";
+import { ColorPoint3D } from "./ColorPoint3D";
 import { MathCanvas2D } from "./MathCanvas2D";
 
 export class Renderer3D {
@@ -16,16 +16,16 @@ export class Renderer3D {
     }
   }
 
-  public drawColorVector(vector: ColorVector): void {
+  public drawColorPoint3D(Point3D: ColorPoint3D): void {
     if(this.mathCanvas2D){
-      const projected = this.perspective.multiplyByVectorOnRight(vector);
-      this.mathCanvas2D.drawPixelWorld2DCoordinates(projected.elements[0], projected.elements[1], vector.color);
+      const projected = this.perspective.multiplyByPoint3DOnRight(Point3D);
+      this.mathCanvas2D.drawPixelWorld2DCoordinates(projected.x, projected.y, Point3D.color);
     }
   }
 
   public drawCircle(circle: Circle): void {
     if(this.mathCanvas2D){
-      this.perspective.transformVectorOnRight(circle);
+      this.perspective.transformPoint3DOnRight(circle);
       this.mathCanvas2D.drawCircleWorld2DCoordinates(circle);
     }
   }

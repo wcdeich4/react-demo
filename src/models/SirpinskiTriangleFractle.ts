@@ -1,5 +1,5 @@
 import { ScreenRangeConverter2D } from "../math/ScreenRangeConverter2D";
-import { Vector } from "../math/Vector";
+import { Point2D } from "../math/Point2D";
 import { MathCanvas2D } from "./MathCanvas2D";
 import { Fractile } from "./Fractile";
 
@@ -7,9 +7,9 @@ export class SirpinskiTriangleFractile extends Fractile
 {
     public color: string | CanvasGradient | CanvasPattern;
     public recursionDepthLimit: number = 7;
-    private seedPoint1: Vector ;
-    private seedPoint2: Vector ;
-    private seedPoint3: Vector ;
+    private seedPoint1: Point2D ;
+    private seedPoint2: Point2D ;
+    private seedPoint3: Point2D ;
 
     constructor(range?: ScreenRangeConverter2D)
     {
@@ -20,9 +20,9 @@ export class SirpinskiTriangleFractile extends Fractile
           range = ScreenRangeConverter2D.Standard();
         }
         this.range = range;
-        this.seedPoint1 = new Vector([range.xMin, range.yMin]);
-        this.seedPoint2 = new Vector([0, range.yMax]);
-        this.seedPoint3 = new Vector([range.xMax, range.yMin]);
+        this.seedPoint1 = new Point2D(range.xMin, range.yMin);
+        this.seedPoint2 = new Point2D(0, range.yMax);
+        this.seedPoint3 = new Point2D(range.xMax, range.yMin);
         this.calculated = true;
 
       }
@@ -32,9 +32,9 @@ export class SirpinskiTriangleFractile extends Fractile
       //this.processTriangles(0, 0);
     }
 
-    public processTriangles(mathCanvas: MathCanvas2D, vertex1: Vector, vertex2: Vector, vertex3: Vector, depth: number ): void
+    public processTriangles(mathCanvas: MathCanvas2D, vertex1: Point2D, vertex2: Point2D, vertex3: Point2D, depth: number ): void
     {
-      mathCanvas.drawTriangleOutlineWorld2D(vertex1.elements[0], vertex1.elements[1], vertex2.elements[0], vertex2.elements[1], vertex3.elements[0], vertex3.elements[1], this.color);
+      mathCanvas.drawTriangleOutlineWorld2D(vertex1.x, vertex1.y, vertex2.x, vertex2.y, vertex3.x, vertex3.y, this.color);
 
       if (this.recursionDepthLimit > depth)
       {

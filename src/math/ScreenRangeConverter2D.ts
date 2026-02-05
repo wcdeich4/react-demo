@@ -1,13 +1,12 @@
 import { Point2D } from "./Point2D";
 import { ISize2D } from "./ISize2D";
-import { Vector } from "./Vector";
 import { ICloneable } from "./ICloneable";
 import { Range2D } from "./Range2D";
 
 export class ScreenRangeConverter2D extends Range2D implements ISize2D,  ICloneable<ScreenRangeConverter2D>
 {
-    private mostRecentCanvasToWorld2DVector: Vector;
-    private mostRecentCoordinate2D: Point2D;
+    private mostRecentCanvasToWorldPoint: Point2D;
+    private mostRecentPoint: Point2D;
     public width: number;
     public height: number;
     public xAspectRatio: number = 0;
@@ -17,8 +16,8 @@ export class ScreenRangeConverter2D extends Range2D implements ISize2D,  IClonea
     {
         super();
         this.set(xMin, xMax, yMin, yMax, width, height);
-        this.mostRecentCanvasToWorld2DVector = new Vector([0, 0]);
-        this.mostRecentCoordinate2D = new Point2D(0,0); // { x:0, y:0};
+        this.mostRecentCanvasToWorldPoint = new Point2D(0, 0);
+        this.mostRecentPoint = new Point2D(0,0); // { x:0, y:0};
     }
 
     /**
@@ -108,42 +107,29 @@ export class ScreenRangeConverter2D extends Range2D implements ISize2D,  IClonea
 
 
     /**
-     * Get the world Vector 2D co-ordinate for canvas x and y co-ordinates
+     * Get the world Point3D 2D co-ordinate for canvas x and y co-ordinates
      * @param x {number} canvas x co-ordinate
      * @param y {number} canvas y co-ordinate
-     * @returns {Vector} world 2D co-ordinate
+     * @returns {Point2D} world 2D co-ordinate
      */
-    public canvasToWorld2D(x: number, y: number): Vector
+    public canvasToWorld2D(x: number, y: number): Point2D
     {
-        this.mostRecentCanvasToWorld2DVector.elements[0] = x / this.xAspectRatio - Math.abs(this.xMin);
-        this.mostRecentCanvasToWorld2DVector.elements[1] = Math.abs(this.yMin) - y / this.yAspectRatio  ;
-        return this.mostRecentCanvasToWorld2DVector;
+        this.mostRecentCanvasToWorldPoint.x = x / this.xAspectRatio - Math.abs(this.xMin);
+        this.mostRecentCanvasToWorldPoint.y = Math.abs(this.yMin) - y / this.yAspectRatio  ;
+        return this.mostRecentCanvasToWorldPoint;
     }
-
-    // /**
-    //  * Get the 2D world Complex Number for canvas x and y co-ordinates
-    //  * @param x {number} canvas x co-ordinate
-    //  * @param y {number} canvas y co-ordinate
-    //  * @returns {ComplexPoint} world 2D co-ordinate
-    //  */
-    // public canvasToWorld2DComplex(x: number, y: number): ComplexPoint
-    // {
-    //     this.mostRecentCanvasToWorld2DComplex.x = x / this.xAspectRatio - Math.abs(this.xMin);
-    //     this.mostRecentCanvasToWorld2DComplex.y = Math.abs(this.yMin) - y / this.yAspectRatio  ;
-    //     return this.mostRecentCanvasToWorld2DComplex;
-    // }
 
     /**
      * Get the 2D world canvas x and y co-ordinates
-     * @param x {number} canvas x co-ordinate
-     * @param y {number} canvas y co-ordinate
+     * @param {number} x canvas x co-ordinate
+     * @param {number} y canvas y co-ordinate
      * @returns {Coordinate2D} world 2D co-ordinate
      */
     public canvasToWorld2DCoordinates(x: number, y: number): Point2D
     {
-        this.mostRecentCoordinate2D.x = x / this.xAspectRatio - Math.abs(this.xMin);
-        this.mostRecentCoordinate2D.y = Math.abs(this.yMin) - y / this.yAspectRatio  ;
-        return this.mostRecentCoordinate2D;
+        this.mostRecentPoint.x = x / this.xAspectRatio - Math.abs(this.xMin);
+        this.mostRecentPoint.y = Math.abs(this.yMin) - y / this.yAspectRatio  ;
+        return this.mostRecentPoint;
     }
 
     /**
@@ -210,7 +196,7 @@ console.log('inside ScreenRangeConverter2D.log');
     }
 
     /**
-     * get distance between pixelso n the screen in the Y direction
+     * get distance between pixels on the screen in the Y direction
      * @returns {number} this.yRange() / this.height;
      */
     public getScreenDeltaY(): number

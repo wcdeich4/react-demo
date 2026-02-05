@@ -1,19 +1,19 @@
 import { StringHelper } from "../utilities/StringHelper";
-import { Vector } from "../math/Vector";
+import { Point3D } from "../math/Point3D";
 
 export class OBJMesh
 {
     public materialIndex: number;
-    public vertexArray: Array<Vector>;
-    public normalArray: Array<Vector>;
-    public textureCoordinateArray: Array<Vector>;
+    public vertexArray: Array<Point3D>;
+    public normalArray: Array<Point3D>;
+    public textureCoordinateArray: Array<Point3D>;
 
     public constructor(objFileContents?: string)
     {
         this.materialIndex = -1;
-        this.vertexArray = new Array<Vector>();
-        this.normalArray = new Array<Vector>();
-        this.textureCoordinateArray = new Array<Vector>();
+        this.vertexArray = new Array<Point3D>();
+        this.normalArray = new Array<Point3D>();
+        this.textureCoordinateArray = new Array<Point3D>();
 
     }
 
@@ -45,7 +45,7 @@ export class OBJMesh
             {
                 try 
                 {
-                    let textureCoordinate: Vector = new Vector();
+                    let textureCoordinate: Point3D = new Point3D(0,0,0);
                     textureCoordinate.setFromDelimetedString(linesArray[i]);
                     this.textureCoordinateArray.push(textureCoordinate);
                 }
@@ -60,13 +60,13 @@ export class OBJMesh
             {
                 try 
                 {
-                    let perpendicularVector: Vector = new Vector();
-                    perpendicularVector.setFromDelimetedString(linesArray[i]);
-                    this.normalArray.push(perpendicularVector);
+                    let perpendicularPoint3D: Point3D = new Point3D(0,0,0);
+                    perpendicularPoint3D.setFromDelimetedString(linesArray[i]);
+                    this.normalArray.push(perpendicularPoint3D);
                 }
                 catch (e)
                 {
-                    let errorMessage: string = 'error 002 in OBJMesh.loadOBJFile(objFileContent: string).  Could not parse string ' + linesArray[i] + '  as normal vector.  Error: ' + e;
+                    let errorMessage: string = 'error 002 in OBJMesh.loadOBJFile(objFileContent: string).  Could not parse string ' + linesArray[i] + '  as normal Point3D.  Error: ' + e;
                     console.error(e);
                     throw new Error(errorMessage);
                 }
@@ -75,7 +75,7 @@ export class OBJMesh
             {
                 try 
                 {
-                    let vertex: Vector = new Vector();
+                    let vertex: Point3D = new Point3D(0,0,0);
                     vertex.setFromDelimetedString(linesArray[i]);
                     this.vertexArray.push(vertex);
                 }
@@ -96,7 +96,7 @@ export class OBJMesh
         //probably not needed - actually wrong - even numberOfVerticies bc we need to repeat for index-less BufferGeometry
  //       const numberOfVerticies = ArrayHelper.countElementsThatStartWith(linesArray, 'v ');
   //      const numberTextureCoordinates = ArrayHelper.countElementsThatStartWith(linesArray, 'vt ');
-   //     const numberOfNormalVectors = ArrayHelper.countElementsThatStartWith(linesArray, 'vn ');
+   //     const numberOfNormalPoint3Ds = ArrayHelper.countElementsThatStartWith(linesArray, 'vn ');
 
          
     }

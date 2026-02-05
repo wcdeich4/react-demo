@@ -40,41 +40,6 @@ export class ComplexPoint extends Point2D implements ICloneable<ComplexPoint>
     return new ComplexPoint(this.x, this.y);
   }
 
-    // /**
-    //  * Ttest if equal to another complex number. (undefined, null, other types, and complex numbers different values return false)
-    //  * @param {any} obj - other vectorto compare.
-    //  */
-    // public equals(obj: any): boolean
-    // {
-    //     if (typeof obj === 'undefined')
-    //     {
-    //         return false;
-    //     }
-    //     else if (obj == null)
-    //     {
-    //         return false;
-    //     }
-    //     //TODO : parse json
-    //     else if (obj instanceof ComplexPoint)
-    //     {
-    //         return (Math.abs(this.x - obj.x) <= EquatableWithTolerance.Tolerance) && (Math.abs(this.y - obj.y) <= EquatableWithTolerance.Tolerance);
-    //     }
-    //     else
-    //     {
-    //         return false;
-    //     }
-    // }
-
-  /**
-   * Add complex number to this one
-   * @param {ComplexPoint} other - the other complex number you want to add to this one
-   */
-  public add(other: ComplexPoint): void
-  {
-    this.x += other.x;
-    this.y += other.y;
-  }
-
   /**
    * Get a new ComplexPoint object equal to the sum of this complex number and other complex number without modifying this complex number.
    * @param other {ComplexPoint} other complex number to add to this complex number
@@ -85,16 +50,6 @@ export class ComplexPoint extends Point2D implements ICloneable<ComplexPoint>
     let result = this.clone();
     result.add(other);
     return result;
-  }
-
-  /**
-   * Subtract complex number from this one
-   * @param {ComplexPoint} other - the other complex number you want to subtract from this one
-   */
-  public subtract(other: ComplexPoint): void
-  {
-    this.x -= other.x;
-    this.y -= other.y;
   }
 
     /**
@@ -110,16 +65,6 @@ export class ComplexPoint extends Point2D implements ICloneable<ComplexPoint>
   }
 
   /**
-   * Multiply this complex number by a scalar
-   * @param {number} scalar scalar number to multilpy this complex number by
-   */
-  public multiplyByScalar(scalar: number): void
-  {
-    this.x *= scalar;
-    this.y *= scalar;
-  }
-
-  /**
    * Get a new complex number object equal to this complex number multiplied by scalar without modifying this complex number.
    * @param scalar {number} to mulitpy by
    * @returns {ComplexPoint} equal to this complex number multiplied by scalar
@@ -129,16 +74,6 @@ export class ComplexPoint extends Point2D implements ICloneable<ComplexPoint>
     let result = this.clone();
     result.multiplyByScalar(scalar);
     return result;
-  }
-
-  /**
-   * Divide this complex number by a scalar
-   * @param {number} scalar scalar number to divide this complex number by
-   */
-  public divideByScalar(scalar: number): void
-  {
-    this.x /= scalar;
-    this.y /= scalar;
   }
 
   /**
@@ -215,16 +150,6 @@ export class ComplexPoint extends Point2D implements ICloneable<ComplexPoint>
   public magnitude(): number
   {
     return Math.sqrt(this.magnitudeSquared());
-  }
-
-  /**
-   * make the radius of this complex number 1
-   */
-  public normalize(): void
-  {
-    const mag = this.magnitude();
-    this.x /= mag;
-    this.y /= mag;
   }
 
   /**

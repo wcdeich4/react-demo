@@ -1,6 +1,5 @@
-import { Vector } from '../math/Vector';
+import { Pixel } from './Pixel';
 import { Matrix } from "../math/Matrix";
-import { ColorVector } from './ColorVector';
 /// <reference lib="webworker" />
 
 addEventListener('message', ({ data }) => {
@@ -9,44 +8,48 @@ console.log('worker received message: ' + data);
 
 const stemMatrix = new Matrix([[0, 0],[0, 0.16]]);
 const smallLeafletMatrix = new Matrix([[0.85, 0.04],[-0.04, 0.85]]);
-const smallLeafletOffsetVector = new Vector([0, 1.6]);
-const largeLeftLeafletMatrix = new Matrix([[0.2, -0.26],[0.23, 0.22]]);
-const largeLeftLeafletOffsetVector = new Vector([0, 1.6]);
+smallLeafletMatrix.transpose(); //transpose for left handed point multiplication
+const smallLeafletOffsetPixel = new Pixel(0, 1.6);
+const largeLeftLeafletMatrix = new Matrix([[0.2, -0.23],[0.26, 0.22]]);
+largeLeftLeafletMatrix.transpose(); //transpose for left handed point multiplication
+const largeLeftLeafletOffsetPixel = new Pixel(0, 1.6);
 const largeRightLeafletMatrix = new Matrix([[-0.15, 0.28],[0.26, 0.24]]);
-const largeRightLeafletOffsetVector = new Vector([0, 0.44]);
+largeRightLeafletMatrix.transpose(); //transpose for left handed point multiplication
+const largeRightLeafletOffsetPixel = new Pixel(0, 0.44);
 
 let randomValue: number = 0;
-let currentPoint = new ColorVector([0, 0]);
-currentPoint.color = 'green';
+let currentPixel = new Pixel(0, 0);
+currentPixel.color = 'green';
 let i:number = 0;
 while (i < 60000 )
 {
     if (randomValue < 0.01) 
     {
-        stemMatrix.transformVectorOnRight(currentPoint);
-        currentPoint.color = 'brown';
+        currentPixel.transformLeftOfMatrix(stemMatrix);
+        //stemMatrix.transformPixelOnRight(currentPixel);
+        currentPixel.color = 'brown';
     }
     else if (randomValue < 0.86)
     {
-        smallLeafletMatrix.transformVectorOnRight(currentPoint);
-        currentPoint.add(smallLeafletOffsetVector);
-        currentPoint.color = '#00FF80';
+        currentPixel.transformLeftOfMatrix(smallLeafletMatrix);
+        currentPixel.add(smallLeafletOffsetPixel);
+        currentPixel.color = '#00FF80';
     }
     else if (randomValue < 0.93)
     {
-        largeLeftLeafletMatrix.transformVectorOnRight(currentPoint);
-        currentPoint.add(largeLeftLeafletOffsetVector);
-        currentPoint.color = '#00FF70';
+        currentPixel.transformLeftOfMatrix(largeLeftLeafletMatrix);
+        currentPixel.add(largeLeftLeafletOffsetPixel);
+        currentPixel.color = '#00FF70';
     }
     else 
     {
-        largeRightLeafletMatrix.transformVectorOnRight(currentPoint);
-        currentPoint.add(largeRightLeafletOffsetVector);
-        currentPoint.color = '#00FF70';
+        currentPixel.transformLeftOfMatrix(largeRightLeafletMatrix);
+        currentPixel.add(largeRightLeafletOffsetPixel);
+        currentPixel.color = '#00FF60';
     }
     i++;
     randomValue = Math.random();
     
-    postMessage(JSON.stringify(currentPoint));
+    postMessage(JSON.stringify(currentPixel));
 }
 

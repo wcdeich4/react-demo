@@ -1,18 +1,16 @@
 import { EquatableWithTolerance } from "./EquatableWithTolerance";
-import { Vector } from "./Vector";
-//import { GenericVector } from "./GenericVector"; //use arrays as vectors ??????????????????????????????????????????
-//maybe do not use array as vector b/c we want static & instance methods for vectors......................
+import { Point3D } from "./Point3D";
 
 export class Matrix extends EquatableWithTolerance
 {
     public elements: number[][];
     /**
      * constructor
-     * @param array2D array of array of number or null
-     * @param numberOfRows number or null
-     * @param numberOfColumns number or null
+     * @param {Array<Array<number>>|null} array2D array of array of number or null. Overrides numberOfRows, numberOfColumns
+     * @param {number} numberOfRows number of rows, 3 by default
+     * @param {number} numberOfColumns number of rows, 3 by de fault
      */
-    constructor(array2D: Array<Array<number>>|null = null, numberOfRows?: number, numberOfColumns: number|null = null)
+    constructor(array2D: Array<Array<number>>|null = null, numberOfRows: number = 3, numberOfColumns: number = 3)
     {
         super();
         if (array2D == null)
@@ -20,7 +18,6 @@ export class Matrix extends EquatableWithTolerance
             if ((numberOfRows != null) )
             {
                 this.elements = new Array<Array<number>>(numberOfRows);
-
                 if (numberOfColumns != null)
                 {
                     for(let i = 0; i < numberOfRows; i++)
@@ -180,48 +177,34 @@ export class Matrix extends EquatableWithTolerance
      * create look at matrix like in OpenGL, except row-major math is the default.
      * https://www.geertarien.com/blog/2017/07/30/breakdown-of-the-lookAt-function-in-OpenGL
      * https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
-     * @param {Vector} cameraPosition camera poisition in 3D cartesian coordinates
-     * @param {Vector} focalPoint point to look at in 3D cartesian coordinates
-     * @param {Vector} upVector up vector in 3D cartesian coordinates (approximate is ok)
+     * @param {Point3D} cameraPosition camera poisition in 3D cartesian coordinates
+     * @param {Point3D} focalPoint point to look at in 3D cartesian coordinates
+     * @param {Point3D} upVector up Point3D in 3D cartesian coordinates (approximate is ok)
      * @param {boolean} columnMajor 
      */
-    public setLookAtMatrix(cameraPosition: Vector, focalPoint: Vector, upVector: Vector, columnMajor: boolean = false ): void
+    public setLookAtMatrix(cameraPosition: Point3D, focalPoint: Point3D, upVector: Point3D, columnMajor: boolean = false ): void
     {
-        const cameraZAxis: Vector = <Vector>focalPoint.getDifferenceWith(cameraPosition) as Vector; //aka forward vector
+        const cameraZAxis: Point3D = <Point3D>focalPoint.getDifferenceWith(cameraPosition) as Point3D; //aka forward Point3D
         cameraZAxis.normalize();
-        const cameraXAxis: Vector = cameraZAxis.crossProduct(upVector); //aka right vector
+        const cameraXAxis: Point3D = cameraZAxis.crossProduct(upVector); //aka right Point3D
         cameraXAxis.normalize();
-        const cameraYAxis: Vector = cameraXAxis.crossProduct(cameraZAxis); //aka camera up ?
+        const cameraYAxis: Point3D = cameraXAxis.crossProduct(cameraZAxis); //aka camera up ?
         cameraZAxis.negate();
 
-        if (this.elements == null)
+        if (this.elements == null || this.elements.length < 4)
         {
-            this.elements = new Array<Array<number>>(3);
+            this.elements = new Array<Array<number>>(4);
         }
 
-       // const result = new Matrix(null, 3, null);
-        this.setRow(0, cameraXAxis.elements);
-        this.setRow(1, cameraYAxis.elements);
-        this.setRow(2, cameraZAxis.elements);
-
-        const translationX = - cameraXAxis.dotProduct(cameraPosition);
-        const translationY = - cameraYAxis.dotProduct(cameraPosition);
-        const translationZ = - cameraZAxis.dotProduct(cameraPosition);
-        this.setElement(0, 3, translationX);
-        this.setElement(1, 3, translationY);
-        this.setElement(2, 3, translationZ);
-
-        this.setElement(3, 0, 0);
-        this.setElement(3, 1, 0);
-        this.setElement(3, 2, 0);
-        this.setElement(3, 3, 1);
+        this.elements[0] = [cameraXAxis.x, cameraXAxis.y, cameraXAxis.z,   - cameraXAxis.dotProduct(cameraPosition) ];
+        this.elements[1] = [cameraYAxis.x, cameraYAxis.y, cameraYAxis.z,   - cameraYAxis.dotProduct(cameraPosition) ];
+        this.elements[2] = [cameraZAxis.x, cameraZAxis.y, cameraZAxis.z,   - cameraZAxis.dotProduct(cameraPosition) ];
+        this.elements[3] = [0, 0, 0, 1];
 
         if (columnMajor)
         {
             this.transpose();
         }
-
-     //   return result;
     }
 
     /**
@@ -297,17 +280,16 @@ export class Matrix extends EquatableWithTolerance
     }
 
     /**
-     * Transform an array as a vector by multiplying it on the right hand side of this matrix. Does not modify the original array Uses Homogenius Efficency Hack: browsers run out of memory fast, so we may not ant to store the homogenous 1 at the end of vectors. But we need the math to work out the same.
-     * @param {Vector} originalElements - array vector to multiply by
-     * @param {Vector} resultElements - array vector result
+     * Transform an array as a Point3D by multiplying it on the right hand side of this matrix. Does not modify the original array Uses Homogenius Efficency Hack: browsers run out of memory fast, so we may not ant to store the homogenous 1 at the end of Point3Ds. But we need the math to work out the same.
+     * @param {Array<number>} originalElements - array of numbers treated as vector
+     * @returns {Array<number>} result
      */
-    public MultiplyByArrayOnRightAndStoreToResultArray(originalElements: Array<number>, resultElements: Array<number>): void
+    public MultiplyByArrayOnRight(originalElements: Array<number>): Array<number>
     {
         const limit = Math.min(this.getNumberOfColumns(), originalElements.length );
+        const resultElements = new Array<number>(limit);
       //  const limit = originalElements.length ; //speed hack, wrong if size mismatch
         const numberOfRows = this.getNumberOfRows();
-
-
             let sum: number, i: number;
             for(let row = 0; row < numberOfRows; row++ )
             {
@@ -329,30 +311,40 @@ export class Matrix extends EquatableWithTolerance
                     resultElements[row] = sum;
                // }
             }
-
+        return resultElements;
     }
 
     /**
-     * Transform any Vector on the right hand side. Modifies original vector. Uses Homogenius Efficency Hack: browsers run out of memory fast, so we may not ant to store the homogenous 1 at the end of vectors. But we need the math to work out the same.
-     * @param {Vector} rightSideVector any generic vector to be transformed
+     * Transform any Point3D on the right hand side. Modifies original Point3D. Homogenius Efficency Hack: treats Point3D as x,y,z,1
+     * @param {Point3D} rightSide any generic Point3D to be transformed
      */
-    public transformVectorOnRight(rightSideVector: Vector): void
+    public transformPoint3DOnRight(rightSide: Point3D): void
     {
-        let transformedArray = new Array<number>(rightSideVector.elements.length);
-        this.MultiplyByArrayOnRightAndStoreToResultArray(rightSideVector.elements, transformedArray);
-        rightSideVector.set(...transformedArray);
+        const numberOfColumns = this.getNumberOfColumns();
+        let x= this.elements[0][0]*rightSide.x + this.elements[0][1]*rightSide.y + this.elements[0][2]*rightSide.z ;
+        if(numberOfColumns > 3){
+            x += this.elements[0][3]; //Homogenius Efficency Hack
+        }
+        let y= this.elements[1][0]*rightSide.x + this.elements[1][1]*rightSide.y + this.elements[1][2]*rightSide.z ;
+        if(numberOfColumns > 3){
+            y += this.elements[1][3]; //Homogenius Efficency Hack
+        }
+        let z= this.elements[2][0]*rightSide.x + this.elements[2][1]*rightSide.y + this.elements[2][2]*rightSide.z ; 
+        if(numberOfColumns > 3){
+            z += this.elements[2][3]; //Homogenius Efficency Hack
+        }
+        rightSide.set(x,y,z);
     }
 
     /**
-     * Multiply by a Vector on the right hand side using Homogenius Efficency Hack: browsers run out of memory fast, so we may not ant to store the homogenous 1 at the end of vectors. But we need the math to work out the same.
-     * @param {Vector} rightSideVector - vector to multiply by
+     * Multiply by a Point3D on the right hand side and get new Point3D. Does  not change this original Point3D object.
+     * @param {Point3D} rightSide - Point3D to multiply by
      */
-    public multiplyByVectorOnRight(rightSideVector: Vector): Vector
+    public multiplyByPoint3DOnRight(rightSide: Point3D): Point3D
     {
-        let transformedArray = new Array<number>(rightSideVector.elements.length);
-        this.MultiplyByArrayOnRightAndStoreToResultArray(rightSideVector.elements, transformedArray);
-        let result = new Vector(transformedArray);
-        return result;
+        const NewVect = rightSide.clone();
+        this.transformPoint3DOnRight(NewVect);        
+        return NewVect;
     }
 
     /**
@@ -373,8 +365,8 @@ export class Matrix extends EquatableWithTolerance
     }
 
     /**
-     * Test if matrix is equal to another Matrix. (undefined, null, other types, and vectors with different values return false)
-     * @param {any} obj - other vectorto compare.
+     * Test if matrix is equal to another Matrix. (undefined, null, other types, and Point3Ds with different values return false)
+     * @param {any} obj - other Point3Dto compare.
      */
     public equals(obj: any): boolean
     {

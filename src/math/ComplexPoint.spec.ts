@@ -81,8 +81,8 @@ describe('ComplexPoint', () => {
         const r1 = Probability.getRandomNumberInRange(-10000, 10000);
         const i1 = Probability.getRandomNumberInRange(-10000, 10000);
         const c = new ComplexPoint(r1, i1);
-        let normalizedVector = c.getNormalized();
-        expect(1 == normalizedVector.magnitude());
+        let normalizedPoint3D = c.getNormalized();
+        expect(1 == normalizedPoint3D.magnitude());
     }); 
 
     it('Complex Number GetAngle #0', () => {
