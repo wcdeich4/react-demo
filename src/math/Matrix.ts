@@ -15,10 +15,10 @@ export class Matrix extends EquatableWithTolerance
         super();
         if (array2D == null)
         {
-            if ((numberOfRows != null) )
+            if ((numberOfRows > 0) )
             {
                 this.elements = new Array<Array<number>>(numberOfRows);
-                if (numberOfColumns != null)
+                if (numberOfColumns > 0)
                 {
                     for(let i = 0; i < numberOfRows; i++)
                     {
@@ -191,11 +191,7 @@ export class Matrix extends EquatableWithTolerance
         const cameraYAxis: Point3D = cameraXAxis.crossProduct(cameraZAxis); //aka camera up ?
         cameraZAxis.negate();
 
-        if (this.elements == null || this.elements.length < 4)
-        {
-            this.elements = new Array<Array<number>>(4);
-        }
-
+       // this.elements = new Array<Array<number>>(4); skip safety for speed
         this.elements[0] = [cameraXAxis.x, cameraXAxis.y, cameraXAxis.z,   - cameraXAxis.dotProduct(cameraPosition) ];
         this.elements[1] = [cameraYAxis.x, cameraYAxis.y, cameraYAxis.z,   - cameraYAxis.dotProduct(cameraPosition) ];
         this.elements[2] = [cameraZAxis.x, cameraZAxis.y, cameraZAxis.z,   - cameraZAxis.dotProduct(cameraPosition) ];
@@ -242,7 +238,6 @@ export class Matrix extends EquatableWithTolerance
         }
     }
 
-
     /**
      * Multiply this matrix by another matrix on the right hand side
      * @param {Matrix} rightSideMatrix - the other matrix to multiply by
@@ -288,28 +283,24 @@ export class Matrix extends EquatableWithTolerance
     {
         const limit = Math.min(this.getNumberOfColumns(), originalElements.length );
         const resultElements = new Array<number>(limit);
-      //  const limit = originalElements.length ; //speed hack, wrong if size mismatch
         const numberOfRows = this.getNumberOfRows();
             let sum: number, i: number;
             for(let row = 0; row < numberOfRows; row++ )
             {
-                // for (let column = 0; column < rightSideMatrix.getNumberOfColumns(); column++)
-                // {
-                    sum = 0;
-                    i = 0;
-                    while(i < limit) 
-                    {
-                        sum += this.elements[row][i]*originalElements[i];
-                        i++;
-                    }
-                    //Homogenius Efficency Hack. Remember this.elements[row].length = number of columns in current row
-                    //number of columns in this row = this.elements[row].length 
-                    if ( this.elements[row].length > originalElements.length )
-                    {
-                        sum += this.elements[row][limit] ;
-                    }
-                    resultElements[row] = sum;
-               // }
+                sum = 0;
+                i = 0;
+                while(i < limit)
+                {
+                    sum += this.elements[row][i]*originalElements[i];
+                    i++;
+                }
+                //Homogenius Efficency Hack. Remember this.elements[row].length = number of columns in current row
+                //number of columns in this row = this.elements[row].length 
+                if ( this.elements[row].length > originalElements.length )
+                {
+                    sum += this.elements[row][limit] ;
+                }
+                resultElements[row] = sum;
             }
         return resultElements;
     }

@@ -21,7 +21,11 @@
 }
 
 .orangeOutline {
-  outline: 1px solid #FF8000;
+  outline: 1px solid #FF8000 !important;
+}
+
+.blackOutline {
+  outline: 1px solid black !important;
 }
 
 #root {

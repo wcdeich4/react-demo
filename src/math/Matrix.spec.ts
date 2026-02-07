@@ -1,7 +1,6 @@
 import { Probability } from './Probability';
 import { Matrix } from './Matrix';
 import { Point3D } from './Point3D';
-import { TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 import { ArrayHelper } from '../utilities/ArrayHelper';
 import { EquatableWithTolerance } from './EquatableWithTolerance';
 
@@ -11,7 +10,7 @@ describe('Matrix tests', () => {
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(5, 5, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -26,7 +25,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);;
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(-5, 5, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -46,7 +45,7 @@ describe('Matrix tests', () => {
     const point1 = new Point3D(0,0,0);
     let projectedPoint: Point3D;
     let isMatch = false;
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);;
     for (let longitude = 0; longitude < 2 * Math.PI; longitude += Math.PI / 24) {
       for (let latitude = 0; latitude < Math.PI; latitude += Math.PI / 24) {
         x = r2 * Math.sin(latitude) * Math.cos(longitude);
@@ -94,7 +93,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);;
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(5, 0, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -110,7 +109,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(-5, 0, 0);
 
@@ -125,7 +124,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 5, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -140,7 +139,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, -5, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -155,7 +154,7 @@ describe('Matrix tests', () => {
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 0, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -168,7 +167,7 @@ describe('Matrix tests', () => {
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
-    const lookAtMatrix = new Matrix(null, 4, 4);;
+    const lookAtMatrix = new Matrix(null, 4, 0);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 0, -5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);

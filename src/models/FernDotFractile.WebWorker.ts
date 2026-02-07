@@ -39,13 +39,13 @@ while (i < 60000 )
     {
         currentPixel.transformLeftOfMatrix(largeLeftLeafletMatrix);
         currentPixel.add(largeLeftLeafletOffsetPixel);
-        currentPixel.color = '#00FF70';
+        currentPixel.color = '#00FF60';
     }
     else 
     {
         currentPixel.transformLeftOfMatrix(largeRightLeafletMatrix);
         currentPixel.add(largeRightLeafletOffsetPixel);
-        currentPixel.color = '#00FF60';
+        currentPixel.color = '#00FF40';
     }
     i++;
     randomValue = Math.random();
