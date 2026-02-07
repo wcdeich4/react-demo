@@ -186,9 +186,9 @@ it('Point3D Negate', () => {
   it('3D Load data string', () =>
   {
     const inputDataLine: string = 'vn 0.5 0 0.866025 ';
-    const Point3D: Point3D = new Point3D(0,0,0);
-    Point3D.setFromDelimetedString(inputDataLine);
-    expect(Point3D.x).toEqual(0.5);
-    expect(Point3D.y).toEqual(0);
-    expect(Point3D.z).toEqual(0.866025);
+    const p: Point3D = new Point3D(0,0,0);
+    p.setFromDelimetedString(inputDataLine);
+    expect(p.x).toEqual(0.5);
+    expect(p.y).toEqual(0);
+    expect(p.z).toEqual(0.866025);
   });

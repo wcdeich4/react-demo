@@ -1,6 +1,5 @@
 import { Matrix } from "../math/Matrix";
 import { Circle } from "./Circle";
-import { ColorPoint3D } from "./ColorPoint3D";
 import { MathCanvas2D } from "./MathCanvas2D";
 
 export class Renderer3D {
@@ -13,13 +12,6 @@ export class Renderer3D {
     }
     if(perspective){
       this.perspective = perspective;
-    }
-  }
-
-  public drawColorPoint3D(Point3D: ColorPoint3D): void {
-    if(this.mathCanvas2D){
-      const projected = this.perspective.multiplyByPoint3DOnRight(Point3D);
-      this.mathCanvas2D.drawPixelWorld2DCoordinates(projected.x, projected.y, Point3D.color);
     }
   }
 

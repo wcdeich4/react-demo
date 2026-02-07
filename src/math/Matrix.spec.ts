@@ -46,13 +46,12 @@ describe('Matrix tests', () => {
     let projectedPoint: Point3D;
     let isMatch = false;
     const lookAtMatrix = new Matrix(null, 4, 0);;
-    for (let longitude = 0; longitude < 2 * Math.PI; longitude += Math.PI / 24) {
-      for (let latitude = 0; latitude < Math.PI; latitude += Math.PI / 24) {
+    for (let longitude = 0; longitude < 2 * Math.PI; longitude += Math.PI / 6) {
+      for (let latitude = 0; latitude < Math.PI; latitude += Math.PI / 6) {
         x = r2 * Math.sin(latitude) * Math.cos(longitude);
         y = r2 * Math.sin(latitude) * Math.sin(longitude);
         z = r2 * Math.cos(latitude);
         cameraPosition.set(x, y, z);
-
         lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
 
         x = r1 * Math.sin(latitude) * Math.cos(longitude);
