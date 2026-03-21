@@ -1,6 +1,3 @@
-import { IndexTriplet } from '../models/IndexTriplet';
-import {ArrayHelper} from './ArrayHelper'
-import {StringHelper} from './StringHelper'
 export abstract class OBJHelper
 {
     private static objFileElementTypes: Map<string, string>;

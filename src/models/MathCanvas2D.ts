@@ -3,7 +3,7 @@ import { Point2D } from '../math/Point2D';
 import { IMathDrawable } from './IMathDrawable';
 import { Pixel } from './Pixel';
 import { ScreenRangeConverter2D } from '../math/ScreenRangeConverter2D';
-import { Coordinate } from './Coordinate';
+import { Coordinate } from './mesh/Coordinate';
 import { Circle } from './Circle';
 
 export class MathCanvas2D {
