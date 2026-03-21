@@ -81,18 +81,6 @@ export class Mesh
                 {
                     this.materialName = currentLineTokens[1];
                 }
-                else if (currentLineTokens[0] === 's')
-                {
-                    console.log('smoothing group information not yet supported, line ' + i + linesArray[i] + ' was ignored');
-                }
-                else if (currentLineTokens[0] === 'p')
-                {
-                    console.log('point verticies not yet supported, line ' + i + linesArray[i] + ' was ignored');
-                }
-                else if (currentLineTokens[0] === 'l')
-                {
-                    console.log('line verticies not yet supported, line ' + i + linesArray[i] + ' was ignored');
-                }
                 else if (currentLineTokens[0] == 'vt')
                 {
                     if (currentLineTokens.length < 3)
@@ -264,8 +252,34 @@ export class Mesh
                     } //end for each currentLineTokens[i]
                     this.polygonArray.push(currentPolygon);
                 }
+                else if (currentLineTokens[0] === 's')
+                {
+                    console.log('smoothing group information not yet supported, line ' + i + linesArray[i] + ' was ignored');
+                }
+                else if (currentLineTokens[0] === 'p')
+                {
+                    console.log('dots not yet supported, line ' + i + linesArray[i] + ' was ignored');
+                }
+                else if (currentLineTokens[0] === 'l')
+                {
+                    console.log('lines not yet supported, file line ' + i + linesArray[i] + ' was ignored');
+                }
+                else if (currentLineTokens[0] === 'curv')
+                {
+                    console.log('curves not yet supported, line ' + i + linesArray[i] + ' was ignored');
+                }
+                else if (currentLineTokens[0] === 'surf')
+                {
+                    console.log('surfaces not yet supported, line ' + i + linesArray[i] + ' was ignored');
+                }
+                else if (currentLineTokens[0] === 'o')
+                {
+                    console.log('objects not yet supported, line ' + i + linesArray[i] + ' was ignored');
+                }
+
+
             }
-        } //end for each line in obj file for polygon face data
+        } //end for each line in obj file for polygon-face/line/dot data
 
 
     }
