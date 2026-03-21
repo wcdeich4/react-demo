@@ -1,7 +1,7 @@
-import { StringHelper } from "../utilities/StringHelper";
-import { ColorHelper } from "../utilities/ColorHelper";
+import { StringHelper } from "../../utilities/StringHelper";
+import { ColorHelper } from "../../utilities/ColorHelper";
 
-export class OBJMaterial
+export class Material
 {
     public name: string;
     public  illuminationModel: number = 4; // illum file keyword ignored by Three.js ? 
@@ -16,7 +16,7 @@ export class OBJMaterial
 
     /**
      * load line from a Wavefront MTL file
-     * @param materialFileContents {string} mtl file line
+     * @param {string} materialFileContents mtl file line
      */
     public load(materialFileContents: string): void
     {

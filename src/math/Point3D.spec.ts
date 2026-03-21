@@ -180,15 +180,3 @@ it('Point3D Negate', () => {
   expect(v.y).toEqual(y1 * -1);
   expect(v.z).toEqual(z1 * -1);
 });
-
-
-
-  it('3D Load data string', () =>
-  {
-    const inputDataLine: string = 'vn 0.5 0 0.866025 ';
-    const p: Point3D = new Point3D(0,0,0);
-    p.setFromDelimetedString(inputDataLine);
-    expect(p.x).toEqual(0.5);
-    expect(p.y).toEqual(0);
-    expect(p.z).toEqual(0.866025);
-  });

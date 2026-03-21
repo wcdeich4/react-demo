@@ -153,11 +153,13 @@ export class Point2D extends EquatableWithTolerance implements ICloneable<Point2
         return new Point2D(this.x, this.y);
     }
 
+    /**
+     * implement EquatableWithTolerance.equals
+     * @param {any} obj to compare to
+     * @returns {boolean} true if equal within tolerance, false otherwise
+     */
     public equals(obj: any): boolean {
-        if (obj == null) {
-            return false;
-        }
-        else if (typeof obj === 'undefined') {
+        if (obj == null || typeof obj === 'undefined') {
             return false;
         }
         else if (typeof obj === 'string') {
@@ -184,10 +186,9 @@ export class Point2D extends EquatableWithTolerance implements ICloneable<Point2
      * @param {Point2D} other point to compare to
      * @returns boolean
      */
-    private equalsPoint(other: Point2D): boolean {
+    private equalsPoint(other: Point2D): boolean
+    {
         return (Math.abs(this.x - other.x) <= EquatableWithTolerance.Tolerance) && (Math.abs(this.y - other.y) <= EquatableWithTolerance.Tolerance);
     }
 
-    //TODO: Point3D
-    //        ToColumnMatrix function
 }

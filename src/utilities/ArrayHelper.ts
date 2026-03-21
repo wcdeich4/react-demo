@@ -58,7 +58,20 @@ export abstract class ArrayHelper
         return count;
     }
 
-
+    /**
+     * zero out all values in a 2D array
+     * @param {Array<Array<number>>} array 2D array to set to zeros
+     */
+    public static setZeros(array: Array<Array<number>>): void
+    {
+        for(let i=0; i<array.length; i++)
+        {
+            for(let j=0; j<array[i].length; j++)
+            {
+                array[i][j] = 0;
+            }
+        }
+    }
 
 
 

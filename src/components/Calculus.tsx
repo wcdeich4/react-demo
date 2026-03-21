@@ -6,7 +6,7 @@ import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
 import { JavascriptStringEvaluator } from '../math/JavascriptStringEvaluator';
-import bad from '../../forbidden.json'; //TODO: make 1 configuration.json file
+import configs from '../../configurations.json';
 
 let htmlCanvasElement: HTMLCanvasElement = null;
 let mathCanvas: MathCanvas2D = null;
@@ -19,7 +19,14 @@ export default function Calculus() {
 
   const draw = ():void => {
     if(equationTextboxRef?.current?.value && mathCanvas){
-      if(bad.keywords.includes(equationTextboxRef.current.value.toLowerCase())){
+      let isSafe: boolean = true;
+      for(let i = 0; i < configs.dangerous_keywords.length; i++){ //TODO: put in a security helper
+        if(equationTextboxRef.current.value.toLowerCase().includes(configs.dangerous_keywords[i])){
+          isSafe = false;
+          break;
+        }
+      }
+      if(!isSafe){
         alert('unsafe')
       }
       else{

@@ -5,20 +5,20 @@ export class Range3D extends Range2D
     public zMin: number;
     public zMax: number;
 
-    public constructor(xMin?: number, xMax?: number, yMin?: number, yMax?: number)
+    public constructor(xMin?: number, xMax?: number, yMin?: number, yMax?: number, zMin?: number, zMax?: number)
     {
         super();
-        this.set(xMin, xMax, yMin, yMax);
+        this.set(xMin, xMax, yMin, yMax, zMin, zMax);
     }
 
     /**
      * set values
-     * @param xMin {number} world xMin
-     * @param xMax {number} world xMax
-     * @param yMin {number} world yMin
-     * @param yMax {number} world yMax
-     * @param zMin {number} world zMin
-     * @param zMax {number} world zMax
+     * @param {number} xMin world xMin
+     * @param {number} xMax world xMax
+     * @param {number} yMin world yMin
+     * @param {number} yMax world yMax
+     * @param {number} zMin world zMin
+     * @param {number} zMax world zMax
      */
     public set(xMin?: number, xMax?: number, yMin?: number, yMax?: number, zMin?: number, zMax?: number): void
     {

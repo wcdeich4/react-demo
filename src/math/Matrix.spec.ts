@@ -4,13 +4,15 @@ import { Point3D } from './Point3D';
 import { ArrayHelper } from '../utilities/ArrayHelper';
 import { EquatableWithTolerance } from './EquatableWithTolerance';
 
-describe('Matrix tests', () => {
-  it('Matrix.setLookAtMatrix first octant camera', () => {
+describe('Matrix tests', () =>
+{
+  it('Matrix.setLookAtMatrix first octant camera', () =>
+  {
     const cameraPosition = new Point3D(10, 10, 10);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(5, 5, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -19,13 +21,14 @@ describe('Matrix tests', () => {
     //make other projection matrix to compare??
   });
 
-  it('Matrix.setLookAtMatrix 2nd octant camera', () => {
+  it('Matrix.setLookAtMatrix 2nd octant camera', () =>
+  {
     const cameraPosition = new Point3D(-10, 10, 10);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);;
+    const lookAtMatrix = new Matrix(null, 4, 3);;
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(-5, 5, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -36,18 +39,21 @@ describe('Matrix tests', () => {
   });
 
 
-  it('Matrix.setLookAtMatrix look at origin from every angle', () => {
+  it('Matrix.setLookAtMatrix look at origin from every angle', () =>
+  {
     let r1: number = 1, r2: number = 2, x: number, y: number, z: number;
-    const cameraPosition = new Point3D(0,0,0);
+    const cameraPosition = new Point3D(0, 0, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
-    const point1 = new Point3D(0,0,0);
+    const point1 = new Point3D(0, 0, 0);
     let projectedPoint: Point3D;
     let isMatch = false;
-    const lookAtMatrix = new Matrix(null, 4, 0);;
-    for (let longitude = 0; longitude < 2 * Math.PI; longitude += Math.PI / 6) {
-      for (let latitude = 0; latitude < Math.PI; latitude += Math.PI / 6) {
+    const lookAtMatrix = new Matrix(null, 4, 3);
+    for (let longitude = 0; longitude < 2 * Math.PI; longitude += Math.PI / 6)
+    {
+      for (let latitude = 0; latitude < Math.PI; latitude += Math.PI / 6)
+      {
         x = r2 * Math.sin(latitude) * Math.cos(longitude);
         y = r2 * Math.sin(latitude) * Math.sin(longitude);
         z = r2 * Math.cos(latitude);
@@ -60,12 +66,14 @@ describe('Matrix tests', () => {
         point1.set(x, y, z);
         projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
 
-        if(!projectedPoint){
+        if (!projectedPoint)
+        {
           console.error('projected point not !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111')
         }
 
         isMatch = Math.abs(projectedPoint.x - origin.x) < 0.0001 && Math.abs(projectedPoint.y - origin.y) < 0.0001;
-        if (!isMatch) {
+        if (!isMatch)
+        {
 
           console.log('?????????????????????????????????????????????????????????????????????????????????????????????????????')
           projectedPoint.log();
@@ -86,13 +94,14 @@ describe('Matrix tests', () => {
 
 
 
-  it('Matrix.setLookAtMatrix x-axis camera', () => {
+  it('Matrix.setLookAtMatrix x-axis camera', () =>
+  {
     const cameraPosition = new Point3D(10, 0, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);;
+    const lookAtMatrix = new Matrix(null, 4, 3);;
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(5, 0, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -102,43 +111,46 @@ describe('Matrix tests', () => {
     //make other projection matrix to compare??
   });
 
-  it('Matrix.setLookAtMatrix negative x-axis camera', () => {
+  it('Matrix.setLookAtMatrix negative x-axis camera', () =>
+  {
     const cameraPosition = new Point3D(-10, 0, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(-5, 0, 0);
 
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
-    expect(projectedPoint.x).toEqual(origin.x); 
+    expect(projectedPoint.x).toEqual(origin.x);
     expect(projectedPoint.y).toEqual(origin.y);
   });
 
-  it('Matrix.setLookAtMatrix y-axis camera', () => {
+  it('Matrix.setLookAtMatrix y-axis camera', () =>
+  {
     const cameraPosition = new Point3D(0, 10, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 5, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
     const isMatch = Math.abs(projectedPoint.x - origin.x) < 0.0001 &&
-          Math.abs(projectedPoint.y - origin.y) < 0.0001;
+      Math.abs(projectedPoint.y - origin.y) < 0.0001;
     expect(isMatch).toEqual(true);
   });
 
-  it('Matrix.setLookAtMatrix negative y-axis camera', () => {
+  it('Matrix.setLookAtMatrix negative y-axis camera', () =>
+  {
     const cameraPosition = new Point3D(0, -10, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, -5, 0);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -147,13 +159,14 @@ describe('Matrix tests', () => {
   });
 
 
-  it('Matrix.setLookAtMatrix z-axis camera', () => {
+  it('Matrix.setLookAtMatrix z-axis camera', () =>
+  {
     const cameraPosition = new Point3D(0, 0, 10);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
 
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 0, 5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -161,12 +174,13 @@ describe('Matrix tests', () => {
     expect(projectedPoint.y).toEqual(origin.y);
   });
 
-  it('Matrix.setLookAtMatrix negative z-axis camera', () => {
+  it('Matrix.setLookAtMatrix negative z-axis camera', () =>
+  {
     const cameraPosition = new Point3D(0, 0, -10);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
     const upVector = new Point3D(0, 0, 1);
-    const lookAtMatrix = new Matrix(null, 4, 0);
+    const lookAtMatrix = new Matrix(null, 4, 3);
     lookAtMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
     const point1 = new Point3D(0, 0, -5);
     const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(point1);
@@ -175,7 +189,8 @@ describe('Matrix tests', () => {
   });
 
 
-  it('Matrix.setLookAtMatrix test 2 singularity', () => {
+  it('Matrix.setLookAtMatrix test 2 singularity', () =>
+  {
     const cameraPosition = new Point3D(0, 0, 0);
     const origin = new Point3D(0, 0, 0);
     const focalPoint = <Point3D>origin;
@@ -187,28 +202,31 @@ describe('Matrix tests', () => {
     const Point3DArray = new Array<Point3D>();
     Point3DArray.push(origin);
     const numberOfRandomPoints = 100;
-    for (let index = 0; index < numberOfRandomPoints; index++) {
+    for (let index = 0; index < numberOfRandomPoints; index++)
+    {
       Point3DArray.push(new Point3D(
         Probability.getRandomNumberInRange(-10000, 10000),
         Probability.getRandomNumberInRange(-10000, 10000),
         Probability.getRandomNumberInRange(-10000, 10000)
-     ));
+      ));
     }
 
-    Point3DArray.forEach(p => {
+    Point3DArray.forEach(p =>
+    {
       const projectedPoint = lookAtMatrix.multiplyByPoint3DOnRight(p);
 
-      const isMatch = !isNaN(projectedPoint.x) && 
-                      Math.abs(projectedPoint.x - origin.x) < 0.0001 && 
-                      Math.abs(projectedPoint.y - origin.y) < 0.0001 && 
-                      !isNaN(projectedPoint.y) ;
+      const isMatch = !isNaN(projectedPoint.x) &&
+        Math.abs(projectedPoint.x - origin.x) < 0.0001 &&
+        Math.abs(projectedPoint.y - origin.y) < 0.0001 &&
+        !isNaN(projectedPoint.y);
 
-      expect(isMatch).toEqual(true);      
+      expect(isMatch).toEqual(true);
     });
 
   });
 
-  it('GenericMatrix.SetColumn', () => {
+  it('Matrix.SetColumn', () =>
+  {
     const m2 = new Matrix(null, 4, 4);
     m2.elements[0][0] = 1;
     m2.elements[0][1] = 2;
@@ -232,7 +250,8 @@ describe('Matrix tests', () => {
   });
 
 
-  it('GenericMatrix.transpose', () => {
+  it('Matrix.transpose', () =>
+  {
     const numberOfRows = 4;
     const numberOfColumns = 4;
     const m = new Matrix(null, numberOfRows, numberOfColumns);
@@ -243,15 +262,17 @@ describe('Matrix tests', () => {
     const n = m.clone();
     n.transpose();
 
-    for (let row = 0; row < numberOfRows; row++) {
-      for (let col = 0; col < numberOfColumns; col++) {
+    for (let row = 0; row < numberOfRows; row++)
+    {
+      for (let col = 0; col < numberOfColumns; col++)
+      {
         expect(m.elements[row][col]).toEqual(n.elements[col][row]);
       }
     }
   });
 
-
-  it('Matrix.getNumberOfRowsColumns', () => {
+  it('Matrix.getNumberOfRowsColumns', () =>
+  {
     const expectedNumberOfRows = 4;
     const expectedNumberOfColumns = 5;
     const m = new Matrix(null, expectedNumberOfRows, expectedNumberOfColumns);
@@ -261,7 +282,10 @@ describe('Matrix tests', () => {
     expect(expectedNumberOfColumns).toEqual(actualNumberOfColumns);
   });
 
-  it('Matrix.multiply', () => {
+
+
+  it('Matrix.multiply', () =>
+  {
     const A = new Matrix(null, 4, 4);
     A.elements[0][0] = 1; A.elements[0][1] = 2; A.elements[0][2] = 3; A.elements[0][3] = 4;
     A.elements[1][0] = 5; A.elements[1][1] = 6; A.elements[1][2] = 7; A.elements[1][3] = 8;
@@ -283,22 +307,24 @@ describe('Matrix tests', () => {
     //A times B equals expected
     let D;
     var startTime = new Date().getTime();
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < 10000; i++)
+    {
       D = A.multiplyBy(B);
     }
     var elapsed = new Date().getTime() - startTime;
     console.log("Generic matrix 4x4 elapsed = " + elapsed);
 
-    if (typeof D === 'undefined') {
+    if (typeof D === 'undefined')
+    {
       throw new Error('D matrix is unefined in Matrix.spec.ts???????!!!!!!!!!!!!');
     }
 
     let CMatchesD = C.equals(D);
-    if (!CMatchesD) {
+    if (!CMatchesD)
+    {
       console.log(C);
       console.log(D);
     }
-
 
     expect(CMatchesD).toEqual(true);
 
@@ -317,7 +343,8 @@ describe('Matrix tests', () => {
 
   });
 
-  it('transoform should match multiply on right', () => {
+  it('transoform should match multiply on right', () =>
+  {
     const v1 = new Point3D(2, 3, 4);
 
     const A = new Matrix(null, 4, 4);
@@ -334,7 +361,8 @@ describe('Matrix tests', () => {
   });
 
 
-  it('multiply array should match multiply Point3D on right', () => {
+  it('multiply array should match multiply Point3D on right', () =>
+  {
     const A = new Matrix(null, 4, 4);
     A.elements[0][0] = 1; A.elements[0][1] = 2; A.elements[0][2] = 3; A.elements[0][3] = 4;
     A.elements[1][0] = 5; A.elements[1][1] = 6; A.elements[1][2] = 7; A.elements[1][3] = 8;
@@ -356,8 +384,138 @@ describe('Matrix tests', () => {
 
 
 
+  it('Matrix.getInverse3D Test 0', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 1; m.elements[0][1] = -2; m.elements[0][2] = 3;
+    m.elements[1][0] = 2; m.elements[1][1] = 1; m.elements[1][2] = -4;
+    m.elements[2][0] = -3; m.elements[2][1] = 4; m.elements[2][2] = -1;
+    const inverse = m.getInverse3D();
+    const n = new Point3D(4, 3, -2);
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    const expected = new Point3D(4, 3, 2);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.getInverse3D Test 1', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 1; m.elements[0][1] = -2; m.elements[0][2] = -3;
+    m.elements[1][0] = 2; m.elements[1][1] = 1; m.elements[1][2] = 1;
+    m.elements[2][0] = 1; m.elements[2][1] = 3; m.elements[2][2] = -2;
+    const n = new Point3D(-1, 7, -4);
+    const expected = new Point3D(3, -1, 2);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.getInverse3D Test 2', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 5; m.elements[0][1] = 2; m.elements[0][2] = -1;
+    m.elements[1][0] = 1; m.elements[1][1] = -2; m.elements[1][2] = 2;
+    m.elements[2][0] = 0; m.elements[2][1] = 3; m.elements[2][2] = 1;
+    const n = new Point3D(-7, 0, 17);
+    const expected = new Point3D(-2, 4, 5);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.getInverse3D Test 3', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = -1; m.elements[0][1] = 3; m.elements[0][2] = 1;
+    m.elements[1][0] = 2; m.elements[1][1] = 5; m.elements[1][2] = 0;
+    m.elements[2][0] = 3; m.elements[2][1] = 1; m.elements[2][2] = -2;
+    const n = new Point3D(1, 3, -2);
+    const expected = new Point3D(7.0 / 3.0, -1.0 / 3.0, 13.0 / 3.0);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.getInverse3D Test 4', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 2; m.elements[0][1] = -3; m.elements[0][2] = 2;
+    m.elements[1][0] = -3; m.elements[1][1] = 2; m.elements[1][2] = 1;
+    m.elements[2][0] = 4; m.elements[2][1] = 1; m.elements[2][2] = -3;
+    const n = new Point3D(-3, 1, 4);
+    const expected = new Point3D(2.0 / 3.0, 31.0 / 21.0, 1.0 / 21.0);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
 
 
+  it('Matrix.getInverse3D Test 5', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 2; m.elements[0][1] = 3; m.elements[0][2] = 0;
+    m.elements[1][0] = 1; m.elements[1][1] = -2; m.elements[1][2] = 0;
+    m.elements[2][0] = 0; m.elements[2][1] = 0; m.elements[2][2] = 0;
+    const n = new Point3D(2, 8, 0);
+    const expected = new Point3D(4, -2, 0);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+
+  it('Matrix.getInverse3D Test 6', () =>
+  {
+    const m = new Matrix();
+    m.elements[0][0] = 2; m.elements[0][1] = 5; m.elements[0][2] = 0;
+    m.elements[1][0] = 3; m.elements[1][1] = -7; m.elements[1][2] = 0;
+    m.elements[2][0] = 0; m.elements[2][1] = 0; m.elements[2][2] = 0;
+    const n = new Point3D(16, 24, 0);
+    const expected = new Point3D(8, 0, 0);
+    const inverse = m.getInverse3D();
+    const actual = inverse.multiplyByPoint3DOnRight(n);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+    //TODO: unit test inverse against 
+    // https://www.emathhelp.net/calculators/linear-algebra/matrix-determinant-calculator/
+    //or
+    //https://www.emathhelp.net/calculators/linear-algebra/inverse-of-matrix-calculator
+    // ??
+
+
+  it('Matrix.rotate any axis Test 1', () =>
+  {
+    const m = new Matrix();
+    const axis = new Point3D(1, 0, 0);
+    const point = new Point3D(0, 1, 0);
+    m.setRotateAnyAxis(axis, Math.PI / 2);
+    const expected = new Point3D(0, 0, 1);
+    const actual = m.multiplyByPoint3DOnRight(point);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.rotate any axis Test 2', () =>
+  {
+    const m = new Matrix();
+    const axis = new Point3D(0, 1, 0);
+    const point = new Point3D(0, 0, 1);
+    m.setRotateAnyAxis(axis, Math.PI / 2);
+    const expected = new Point3D(1, 0, 0);
+    const actual = m.multiplyByPoint3DOnRight(point);
+    expect(actual.equals(expected)).toEqual(true);
+  });
+
+  it('Matrix.rotate any axis Test 3', () =>
+  {
+    const m = new Matrix();
+    const axis = new Point3D(0, 0, 1);
+    const point = new Point3D(1, 0, 0);
+    m.setRotateAnyAxis(axis, Math.PI / 2);
+    const expected = new Point3D(0, 1, 0);
+    const actual = m.multiplyByPoint3DOnRight(point);
+    expect(actual.equals(expected)).toEqual(true);
+  });
 
 
 });

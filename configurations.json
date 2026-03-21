@@ -1,0 +1,9 @@
+{
+  "dangerous_keywords": ["xhr", "\\\\", "fetch", "http", "ftp", "promise", "then"],
+  "mongo_api": {
+    "enabled": false,
+    "save_url": "http://localhost:65534/PostMongoFileContent",
+    "load_url": "http://localhost:65534/GetMongoFileContent/",
+    "delete_url": "http://localhost:65534/DeleteMongoFile/"
+  }
+}

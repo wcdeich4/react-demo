@@ -14,7 +14,7 @@ import { MathCanvas2D } from '../models/MathCanvas2D';
 import stop from '../assets/stop.png';
 import sun from '../assets/sun.png';
 import { Point2D } from '../math/Point2D';
-import { Coordinate } from '../models/Coordinate';
+import { Coordinate } from '../models/mesh/Coordinate';
 
 const fractileMap: Map<string, Fractile> = new Map<string, Fractile>();
 fractileMap.set('SirpinskiTriangle', new SirpinskiTriangleFractile());
@@ -29,10 +29,10 @@ const textureImageElement: HTMLImageElement = document.createElement("img"); //n
 
 function drawTexture(): void {
   if(mathCanvas){
-    const coordinate0 = new Coordinate(new Point3D(10, 10, 0), null, new Point2D(0, 0)); //z=0 inefficient
-    const coordinate1 = new Coordinate(new Point3D(310, 10, 0), null, new Point2D(1, 0));
-    const coordinate2 = new Coordinate(new Point3D(310, 310, 0), null, new Point2D(1, 1));
-    const coordinate3 = new Coordinate(new Point3D(10, 310, 0), null, new Point2D(0, 1));
+    const coordinate0 = new Coordinate(new Point3D(10, 10, 0), new Point2D(0, 0), null); //z=0 inefficient
+    const coordinate1 = new Coordinate(new Point3D(310, 10, 0), new Point2D(1, 0), null);
+    const coordinate2 = new Coordinate(new Point3D(310, 310, 0), new Point2D(1, 1), null);
+    const coordinate3 = new Coordinate(new Point3D(10, 310, 0), new Point2D(0, 1), null);
     const coordinateArray = [coordinate0, coordinate1, coordinate2, coordinate3];
     mathCanvas.drawImageVarArgCanvasXY(textureImageElement, coordinateArray);
   }

@@ -1,4 +1,3 @@
-import { StringHelper } from "../utilities/StringHelper";
 import { EquatableWithTolerance } from "./EquatableWithTolerance";
 import { ICloneable } from "./ICloneable";
 
@@ -32,19 +31,30 @@ export class Point3D extends EquatableWithTolerance implements ICloneable<Point3
         this.z = z;
     }
 
+    /**
+     * get Point3D as array of numbers with x, y, z in order
+     * @returns {Array<number>} array of numbers with x, y, z in order
+     */
     public toArray(): number[]
     {
         return [this.x, this.y, this.z];
     }    
 
+    /**
+     * get Point3D as string with x, y, z in order
+     * @returns {string} string with x, y, z in order
+     */
     public toString(): string
     {
         return'<' + this.x +  ', ' + this.y +  ', ' + this.z +  '>' ;
     }
-    
+
+    /**
+     * log the Point3D to console in format <x, y, z>
+     */
     public log(): void
     {
-        console.log(this.toString);
+        console.log(this.toString());
     }
 
     /**
@@ -77,11 +87,11 @@ export class Point3D extends EquatableWithTolerance implements ICloneable<Point3
         temporaryDifferenceArray2[1] = faceVertexArray[2].y - faceVertexArray[1].y;
         temporaryDifferenceArray2[2] = faceVertexArray[2].z - faceVertexArray[1].z;
 
+        //inefficient? 
         Point3D.crossProductArrays(temporaryDifferenceArray1, temporaryDifferenceArray2, temporaryCrossProductArray);
 
         //dot product unrolled
         return 0 <= this.x * temporaryCrossProductArray[0] + this.y * temporaryCrossProductArray[1]  + this.z * temporaryCrossProductArray[2]; 
-
     }
 
     /**
@@ -107,49 +117,6 @@ export class Point3D extends EquatableWithTolerance implements ICloneable<Point3
         return new Point3D(this.y * other.z - this.z * other.y ,
                             this.z * other.x - this.x * other.z ,
                             this.x * other.y - this.y * other.x);
-    }
-
-    /**
-      * set the elements from a delimited string, ignoring non-numeric string elements
-      * @param {string} line a delimited string
-      * @param {string} delimeter string to split the line string. Any whitespace character will result in parsing on all possible whitespace characters.
-     */
-    public setFromDelimetedString(line: string, delimeter: string = ' '): void
-    {
-        let currentLineTokens: Array<string> = null;
-      //  console.log(' line = ' + line);
-        if (!StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(line))
-        {
-            
-            if (StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(delimeter))
-            {
-                currentLineTokens = line.split(/\s+/);
-            }
-            else
-            {
-                currentLineTokens = line.split(delimeter);
-            }
-
-console.log('currentLineTokens::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::', currentLineTokens)
-
-            //check we have data after split
-            if (currentLineTokens != null)
-            {
-                //currentLineTokens[0] would be 'vn', 'vt' etc
-                if(currentLineTokens.length > 1)
-                {
-                    this.x = parseFloat(currentLineTokens[1]);
-                }
-                if(currentLineTokens.length > 2)
-                {
-                    this.y = parseFloat(currentLineTokens[2]);
-                }
-                if(currentLineTokens.length > 3)
-                {
-                    this.z = parseFloat(currentLineTokens[3]);
-                }
-            }
-        }
     }
 
     /**
@@ -225,9 +192,6 @@ console.log('currentLineTokens::::::::::::::::::::::::::::::::::::::::::::::::::
     public getSumWith(other: Point3D): Point3D
     {
         const result = this.clone();
-        if(result == null  || isNaN(result.x) || isNaN(result.y)){
-            console.error('huh????????????????????????????????????????????????????????????????????????????????')
-        }
         result.add(other);
         return result;
     }
@@ -289,33 +253,49 @@ console.log('currentLineTokens::::::::::::::::::::::::::::::::::::::::::::::::::
     }
 
     /**
-     * Test if equal to another Point3D. (undefined, null, other types, and Point3Ds with different values return false)
-     * @param {any} obj - other Point3Dto compare.
+     * implement EquatableWithTolerance.equals
+     * @param {any} obj to compare to
+     * @returns {boolean} true if equal within tolerance, false otherwise
      */
-        public equals(obj: any): boolean
-        {
-            let result = false;
-            if (typeof obj === 'undefined')
-            {
-                result = false;
-            }
-            else if (obj == null)
-            {
-                result =  false;
-            }
-            //TODO : parse json string to match
-            else if (obj instanceof Point3D)
-            {
-                result = (Math.abs(this.x - obj.x) < EquatableWithTolerance.Tolerance)
-                      && (Math.abs(this.y - obj.y) < EquatableWithTolerance.Tolerance)
-                      && (Math.abs(this.z - obj.z) < EquatableWithTolerance.Tolerance);
-            }
-            else
-            {
-                result =  false;
-            }
-            return result;
+    public equals(obj: any): boolean
+    {
+        let result = false;
+        if (obj == null || typeof obj === 'undefined') {
+            return false;
         }
+        else if (typeof obj === 'string') {
+            try {
+                const other = <Point3D>JSON.parse(obj);
+                return this.equalsPoint(other);
+            }
+            catch (error) {
+                console.warn('inside Point2D.equals(obj: any), <Point2D>JSON.parse(obj) threw error ');
+                console.warn(error);
+                return false;
+            }
+        }
+        else if (obj instanceof Point3D)
+        {
+            result = this.equalsPoint(obj);
+        }
+        else
+        {
+            result =  false;
+        }
+        return result;
+    }
+
+    /**
+     * compare this Point to another Point
+     * @param {Point3D} other point to compare to
+     * @returns boolean
+     */
+    private equalsPoint(other: Point3D): boolean
+    {
+        return (Math.abs(this.x - other.x) < EquatableWithTolerance.Tolerance)
+        && (Math.abs(this.y - other.y) < EquatableWithTolerance.Tolerance)
+        && (Math.abs(this.z - other.z) < EquatableWithTolerance.Tolerance);
+    }
 
 
 }

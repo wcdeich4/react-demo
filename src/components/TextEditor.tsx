@@ -1,19 +1,13 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { ThemeState } from '../state/store';
 import { useSelector } from 'react-redux';
-import mongoCRUD from '../../mongo_api_urls.json';
+import configs from '../../configurations.json';
 
 const defaultFileName = 'file.txt';
 const PIXELS_PER_ROW = 16;
 const PIXELS_PER_COL = 16;
 
-export default function TextEditor({downloadFunction}) {
-
-useEffect(() => { //called on component mount
-  console.log('mongoCRUD.save == "":', mongoCRUD.save == "");
-    console.log('TextEditor Component has been loaded/mounted............');
-  }, []); // The empty array ensures it runs only once on mount
-
+export default function TextEditor({downloadFunction}){
   const currentTheme = useSelector((state: ThemeState) => state.theme.mode);
   const [textAreaContent, setTextAreaContent] = useState('');
   const handleFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => { setFileName(event.target.value); };
@@ -46,10 +40,10 @@ useEffect(() => { //called on component mount
   };
 
   const saveToMongoDB = async () => {
-    if(mongoCRUD.save){
+    if(configs.mongo_api.save_url){
       setShowSpinner(true);
       try{
-        const response = await fetch(mongoCRUD.save, {
+        const response = await fetch(configs.mongo_api.save_url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json', // Specify the content type
@@ -65,7 +59,7 @@ useEffect(() => { //called on component mount
           const result = await response.json();
           console.log('response calling ', result);
       }catch(err: any){
-        console.error('error calling ' + mongoCRUD.save, err);
+        console.error('error calling ' + configs.mongo_api.save_url, err);
       }finally{
         setShowSpinner(false);
       }
@@ -73,8 +67,8 @@ useEffect(() => { //called on component mount
   };
 
   const loadFromMongo = async () => {
-    if(mongoCRUD.load){
-      const url = mongoCRUD.load + fileName;
+    if(configs.mongo_api.load_url){
+      const url = configs.mongo_api.load_url + fileName;
       setShowSpinner(true);
       fetch(url) 
           .then(response => {
@@ -96,8 +90,8 @@ useEffect(() => { //called on component mount
   };
 
   const deleteFromMongo = async () => {
-    if(mongoCRUD.delete){
-      const url = mongoCRUD.delete + fileName;
+    if(configs.mongo_api.delete_url){
+      const url = configs.mongo_api.delete_url + fileName;
       setShowSpinner(true);
       fetch(url) 
           .then(response => {
@@ -128,21 +122,19 @@ useEffect(() => { //called on component mount
         <button onClick={handleSaveToFile}>download</button>
         <button onClick={() => {setTextAreaContent(''); setFileName(''); }}>Clear</button>
 
-        {mongoCRUD.load !== "" && (
+        { configs.mongo_api.enabled && (
           <button onClick={() => { loadFromMongo(); }}>Mongo Load</button>
         )}
 
-        {mongoCRUD.save !== "" && (
+        { configs.mongo_api.enabled && (
           <button onClick={() => { saveToMongoDB(); }}>Mongo Save</button>
         )}
 
-        {mongoCRUD.delete !== "" && (
+        { configs.mongo_api.enabled && (
           <button onClick={() => { deleteFromMongo(); }}>Mongo Delete</button>
         )}
 
-
         <span className={showSpinner ? 'spinner' : ''} ></span>
-
       </div>
 
       <div>

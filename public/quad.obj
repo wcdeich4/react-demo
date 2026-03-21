@@ -1,0 +1,16 @@
+# ModelMaker 2.0 OBJ file :o)
+
+mtllib quad.mtl
+g default
+v 0.5 -0.5 0 
+v 0.5 0.5 0 
+v -0.5 0.5 0 
+v -0.5 -0.5 0 
+vt 1 0 
+vt 1 1 
+vt 0 1 
+vt 0 0 
+vn 0 0 1 
+g Square01
+usemtl quad.mtl
+f 1/1/1 2/2/1 3/3/1 4/4/1

@@ -5,32 +5,50 @@ import { downloadCanvasToPNG } from '../utilities/AudioVideoHelper';
 import Menu from './Menu';
 import Settings from './Settings';
 import { MathCanvas2D } from '../models/MathCanvas2D';
-import { Renderer3D } from '../models/Renderer3D';
+import { CanvasRenderer } from '../models/CanvasRenderer';
 import { Point3D } from '../math/Point3D';
+import { Point2D } from '../math/Point2D';
 import { Matrix } from '../math/Matrix';
 import { Circle } from '../models/Circle';
+import { SingleColorPolygon } from '../models/mesh/SingleColorPolygon';
+import { Coordinate } from '../models/mesh/Coordinate';
 
 let htmlCanvasElement: HTMLCanvasElement = null;
 let mathCanvas: MathCanvas2D = null;
-let renderer: Renderer3D = null;
+let renderer: CanvasRenderer = null;
 
-export default function Scene3D() {
+export default function Scene3D()
+{
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const draw = ():void => {
-    if(mathCanvas){
+  const draw = (): void =>
+  {
+    if (mathCanvas)
+    {
       mathCanvas.draw();
 
-      const p = new Circle(0, 0, 0, '#FF0000', 2);
-      renderer.drawCircle(p); //only comes up on resize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      const c = new Circle(0, 0, 1, '#0000FF', 2);
+      renderer.drawCircle(c);
+
+      const coordinate0 = new Coordinate(new Point3D(0.5, -0.5, 0), new Point2D(0, 0), null);
+      const coordinate1 = new Coordinate(new Point3D(0.5, 0.5, 0), new Point2D(0, 0), null);
+      const coordinate2 = new Coordinate(new Point3D(-0.5, 0.5, 0), new Point2D(0, 0), null);
+      const coordinate3 = new Coordinate(new Point3D(-0.5, -0.5, 0), new Point2D(0, 0), null);
+      const coordinateArray = [coordinate0, coordinate1, coordinate2, coordinate3];
+      const face = new SingleColorPolygon(coordinateArray);
+      face.color = 'red'
+      renderer.drawSingleColorPolygon(face);
     }
-    else {
+    else
+    {
       console.error("mathCanvas is null in draw().");
     }
   }
 
-  const windowResizeHandler = () => {
-    if (htmlCanvasElement) {
+  const windowResizeHandler = () =>
+  {
+    if (htmlCanvasElement)
+    {
       htmlCanvasElement.width = window.innerWidth;
       htmlCanvasElement.height = window.innerHeight;
     }
@@ -38,11 +56,40 @@ export default function Scene3D() {
     draw();
   };
 
-  useEffect(() => { // This code runs once, after the first render.
+
+  const fetchFileContent = async () =>
+  {
+    try
+    {
+      const url = 'http://localhost:7777/quad.obj';
+      //'https://raw.githubusercontent.com/williamjclark/CrossPlatformGraphics/main/ReactArt/src/assets/teapot.obj';
+      const response = await fetch(url);
+      if (!response.ok)
+      {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Use response.text() for a plain text file, or response.json() for JSON data
+      const textContent = await response.text();
+      console.log('File content:', textContent);
+    } catch (err: any)
+    {
+      console.error('Error fetching file content:', err);
+    }
+  };
+
+
+
+
+
+
+  useEffect(() =>
+  { // This code runs once, after the first render.
     htmlCanvasElement = canvasRef.current; //get the canvas element
-    if (htmlCanvasElement) {
+    if (htmlCanvasElement)
+    {
       const canvasRenderingContext2D = htmlCanvasElement.getContext('2d');
-      if (canvasRenderingContext2D) {
+      if (canvasRenderingContext2D)
+      {
         mathCanvas = new MathCanvas2D(canvasRenderingContext2D);
         mathCanvas.setRangeValues(-10, 10, -10.0, 10.0);
         mathCanvas.drawAxies2D = false;
@@ -50,21 +97,30 @@ export default function Scene3D() {
         const cameraPosition = new Point3D(10, 10, 10); //TODO: make adjustable or in settings file
         const focalPoint = new Point3D(0, 0, 0);
         const upVector = new Point3D(0, 0, 1);
-        const perspectiveMatrix = new Matrix(null, 4, 4);
+        const perspectiveMatrix = new Matrix(null, 4, 3);
         perspectiveMatrix.setLookAtMatrix(cameraPosition, focalPoint, upVector);
 
-        renderer = new Renderer3D(mathCanvas, perspectiveMatrix);
+        renderer = new CanvasRenderer(mathCanvas, perspectiveMatrix);
 
-      }else{
+      } else
+      {
         console.error("canvasRenderingContext2D is null.");
       }
-    }else{
+    } else
+    {
       console.error("canvasRef.current is null.");
     }
 
-    window.addEventListener('resize', windowResizeHandler);
-    return () => window.removeEventListener('resize', windowResizeHandler);
+    //load model here so it is ready to draw on first resize
+    fetchFileContent();
 
+
+
+
+
+    window.addEventListener('resize', windowResizeHandler);
+    windowResizeHandler(); //initial draw
+    return () => window.removeEventListener('resize', windowResizeHandler);
   }, []); // empty array ensures it only runs on mount
 
 
