@@ -1,7 +1,7 @@
 import { Matrix } from "../math/Matrix";
 import { Circle } from "./Circle";
 import { MathCanvas2D } from "./MathCanvas2D";
-import { SingleColorPolygon } from "./mesh/SingleColorPolygon";
+import { SingleColorPolygon } from "./mesh/Faces/SingleColorPolygon";
 
 export class CanvasRenderer
 {
@@ -25,7 +25,7 @@ export class CanvasRenderer
     if (this.mathCanvas2D)
     {
       this.perspective.transformPoint3DOnRight(circle);
-      this.mathCanvas2D.drawCircleWorld2DCoordinates(circle);
+      this.mathCanvas2D.drawCircleWorld2DCoordinates(circle.x, circle.y, circle.radius, circle.color);
     }
   }
 

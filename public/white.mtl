@@ -1,0 +1,7 @@
+newmtl white
+illum 4
+Ns 1
+Ka 1 1 1 #ambientColor
+Kd 1 1 1 #diffuseColor
+Ks 1 1 1 #specularColor
+Ke 0 0 0 #emissiveColor

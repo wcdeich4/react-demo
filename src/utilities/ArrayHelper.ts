@@ -19,6 +19,8 @@ export abstract class ArrayHelper
         {
             for(let i=0; i<array1.length; i++)
             {
+                console.log("Comparing array1[" + i + "] = " + array1[i] + " to array2[" + i + "] = " + array2[i]);
+
                 if(Math.abs(array1[i] - array2[i]) > tolerance)
                 {
                     result = false;
@@ -71,6 +73,28 @@ export abstract class ArrayHelper
                 array[i][j] = 0;
             }
         }
+    }
+
+    /**
+     * convert string array to number array
+     * @param {Array<string>} stringArray array of strings
+     * @param {number} startIndex first index to work with
+     * @param {number} endIndex last index to work with
+     * @returns {Array<number>} numeric array
+     */
+    public static stringArrayToNumberArray(stringArray: Array<string>, startIndex: number, endIndex: number = -1): Array<number> {
+        const result = new Array<number>();
+        if(endIndex < 0){
+            endIndex = stringArray.length - 1;
+        }
+        for(let i = startIndex; i <= endIndex; i++){
+            if((stringArray[i] == 'zero') || (stringArray[i] == '0x0') || (stringArray[i] == 'x0') ){
+                result.push(0);
+            }else{
+                result.push(parseFloat(stringArray[i]));
+            }
+        }
+        return result;
     }
 
 

@@ -1,9 +1,8 @@
 import { ScreenRangeConverter2D } from "../math/ScreenRangeConverter2D";
-import { IMathDrawable } from "./IMathDrawable";
 import { IProcessable } from "./IProcessable";
 import { MathCanvas2D } from "./MathCanvas2D";
 
-export abstract class Fractile implements IProcessable, IMathDrawable {
+export abstract class Fractile implements IProcessable {
   abstract draw(mathCanvas: MathCanvas2D): void;
   abstract process(): void;
   abstract stop(): boolean;

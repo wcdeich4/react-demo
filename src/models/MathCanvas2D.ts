@@ -98,7 +98,7 @@ export class MathCanvas2D {
 
     /**
      * Set range. The this.range variable needs to be private so we can enforce this.onresize() to be called every time it is set.
-     * @param range {ScreenRangeConverter2D} xMin, xMax, yMin, yMax for the size of the canvas pixels
+     * @param {ScreenRangeConverter2D} range xMin, xMax, yMin, yMax for the size of the canvas pixels
      */
     public setRange(range: ScreenRangeConverter2D): void {
         this.range = range;
@@ -115,10 +115,10 @@ export class MathCanvas2D {
 
     /**
      * set range values and calculatePixelsPerUnit() if possible 
-     * @param xMin minimum x
-     * @param xMax maximum x
-     * @param yMin minimum y
-     * @param yMax maximum y
+     * @param {number} xMin minimum x
+     * @param {number} xMax maximum x
+     * @param {number} yMin minimum y
+     * @param {number} yMax maximum y
      */
     public setRangeValues(xMin: number, xMax: number, yMin: number, yMax: number): void {
         if (this.range == null) {
@@ -337,14 +337,17 @@ export class MathCanvas2D {
 
     /**
      * draw circle in World 2D coordinates
-     * @param {Circle} circle object to draw
+     * @param {number} x x-coordinate of center
+     * @param {number} y y-coordinate of center
+     * @param {number} radius radius of circle in pixels
+     * @param color {string | CanvasGradient | CanvasPattern} fill style
      */
-    public drawCircleWorld2DCoordinates(circle: Circle): void {
-        this.canvasX1 = this.range.world2DXtoCanvasX(circle.x);
-        this.canvasY1 = this.range.world2DYtoCanvasY(circle.y);  
-        this.canvasRenderingContext2D.fillStyle = circle.color;
+    public drawCircleWorld2DCoordinates(x: number, y: number, radius: number, color: string | CanvasGradient | CanvasPattern): void {
+        this.canvasX1 = this.range.world2DXtoCanvasX(x);
+        this.canvasY1 = this.range.world2DYtoCanvasY(y);  
+        this.canvasRenderingContext2D.fillStyle = color;
         this.canvasRenderingContext2D.beginPath();
-        this.canvasRenderingContext2D.arc(this.canvasX1, this.canvasY1, circle.radius, 0, 2 * Math.PI);
+        this.canvasRenderingContext2D.arc(this.canvasX1, this.canvasY1, radius, 0, 2 * Math.PI);
         this.canvasRenderingContext2D.fill();
     }
 

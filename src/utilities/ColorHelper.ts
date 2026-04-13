@@ -112,29 +112,29 @@ export abstract class ColorHelper
 
 
 
-    /**
-     * convert MTL file line to HTML hexadecimal color string for Canvas
-     * @param mtlFileLine {string} mtl file line like Ks 0.2 0.2 0.2 
-     * @returns HTML hexadecimal color string
-     */
-    public static MTLFileLineToHTMLHexadecimalColorString(mtlFileLine: string)
-    {
-        if (StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(mtlFileLine))
-        {
-            throw new Error('mtlFileLine is undefined/null/empty/whitespace in ColorHelper.MTLFileLineToHTMLHexadecimalColorString(mtlFileLine: string)');
-        }
+    // /**
+    //  * convert MTL file line to HTML hexadecimal color string for Canvas
+    //  * @param mtlFileLine {string} mtl file line like Ks 0.2 0.2 0.2 
+    //  * @returns HTML hexadecimal color string
+    //  */
+    // public static MTLFileLineToHTMLHexadecimalColorString(mtlFileLine: string)
+    // {
+    //     if (StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(mtlFileLine))
+    //     {
+    //         throw new Error('mtlFileLine is undefined/null/empty/whitespace in ColorHelper.MTLFileLineToHTMLHexadecimalColorString(mtlFileLine: string)');
+    //     }
 
-        var lineTokens: Array<string> = mtlFileLine.split(/\s+/);
+    //     var lineTokens: Array<string> = mtlFileLine.split(/\s+/);
 
-        if ((lineTokens == null) || (lineTokens.length == 0))
-        {
-            throw new Error('mtlFileLine.split(/\s+/); is null / empty');
-        }
+    //     if ((lineTokens == null) || (lineTokens.length == 0))
+    //     {
+    //         throw new Error('mtlFileLine.split(/\s+/); is null / empty');
+    //     }
 
-        lineTokens = lineTokens.filter( a => !StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(a));
+    //     lineTokens = lineTokens.filter( a => !StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(a));
 
-        return ColorHelper.stringArrayToHTMLHexadecimalColorString(lineTokens, 1);
-    }
+    //     return ColorHelper.stringArrayToHTMLHexadecimalColorString(lineTokens, 1);
+    // }
 
     /**
      * produce HTML color string from string array
@@ -146,19 +146,18 @@ export abstract class ColorHelper
     {
         if ((typeof array == "undefined") || (array == null) || (array.length == 0))
         {
-            const errorMessage: string = 'error in ColorHelper.stringArrayToHexadecimalColorString(array: Array<string>, startIndex: number) - array is null';
+            const errorMessage: string = 'error in ColorHelper.stringArrayToHTMLHexadecimalColorString(array: Array<string>, startIndex: number) - array is null';
             console.error(errorMessage);
             throw new Error(errorMessage);
         }
         else if ((array.length - startIndex) < 3)
         {
-            const errorMessage: string = 'error in ColorHelper.stringArrayToHexadecimalColorString(array: Array<string>, startIndex: number) - array not long enough to form HTML color string';
+            const errorMessage: string = 'error in ColorHelper.stringArrayToHTMLHexadecimalColorString(array: Array<string>, startIndex: number) - array not long enough to form HTML color string';
             console.error(errorMessage);
             throw new Error(errorMessage);
         }
         else
         {
-            console.log(array);
             let result: string = '#';
             for(let i: number = startIndex; i < array.length; i++)
             {
@@ -204,8 +203,8 @@ export abstract class ColorHelper
 
     /**
      * convert number to base hex string.  Treats fractions between 0 and 1 as a fraction of 255.
-     * @param n {number} number to convert to hex string
-     * @returns base 16 string for n
+     * @param {number} n number to convert to hex string
+     * @returns {string} base 16 string for n
      */
     public static numberToHexString(n: number): string
     {
@@ -216,18 +215,67 @@ export abstract class ColorHelper
         }
         else 
         {
+            //treat fractions between 0 and 1 as a fraction of 255, since in MTL files, colors are often represented as decimals between 0 and 1, but in HTML hexadecimal color strings, colors are represented as hex values between 00 and FF (0 and 255 in decimal).
+            //TODO: test perfotmance impact of this if statement
             if ((0 < n) && (n <= 1))
             {
-                n = n * 255;
+                n = Math.round(n * 255);
             }
 
             hexString = n.toString(16);
-
+            //pad with 0 if only one character
             if (hexString.length == 1)
             {
                 hexString = '0' + hexString;
             }
+            //if hex string has a decimal point, take only the part before the decimal point
+            // if (hexString.includes('.')) //should not be necessary since we rounded
+            // {
+            //     hexString = hexString.split('.')[0];
+            // }
         }
         return hexString;
     }
+
+
+
+
+
+
+    /**
+     * produce HTML color string from number array
+     * @param {Array<number>} array array of r g b numbers for color
+     * @param {number} startIndex index to start processing the array
+     * @returns {string} HTML hexadecimal color string
+     */
+    public static numberArrayToHTMLHexadecimalColorString(array: Array<number>, startIndex: number): string
+    {
+        if ((typeof array == "undefined") || (array == null) || (array.length == 0))
+        {
+            const errorMessage: string = 'error in ColorHelper.numberArrayToHTMLHexadecimalColorString(array: Array<number>, startIndex: number) - array is null';
+            console.error(errorMessage);
+            throw new Error(errorMessage);
+        }
+        else if ((array.length - startIndex) < 3)
+        {
+            const errorMessage: string = 'error in ColorHelper.numberArrayToHTMLHexadecimalColorString(array: Array<number>, startIndex: number) - array not long enough to form HTML color string';
+            console.error(errorMessage);
+            throw new Error(errorMessage);
+        }
+        else
+        {
+      //      console.log(array);
+            let result: string = '#';
+            for(let i: number = startIndex; i < array.length; i++)
+            {
+                result = result + ColorHelper.numberToHexString(array[i]);
+            }
+            return result;
+        }
+    }
+
+
+
+
+
 }

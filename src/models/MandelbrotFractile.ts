@@ -33,7 +33,7 @@ export class MandelbrotFractile extends Fractile {
     }
 
 
-    draw(mathCanvas: MathCanvas2D): void {
+    public draw(mathCanvas: MathCanvas2D): void {
         if (this.range == null) {
             console.error("this.range is null in MandelbrotFractile.draw()");
             return;

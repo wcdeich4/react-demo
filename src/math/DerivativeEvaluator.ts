@@ -1,8 +1,10 @@
+import { Light } from "../models/Light";
 import { MathCanvas2D } from "../models/MathCanvas2D";
 import { I2DEquation } from "./I2DEquation";
 import { IIntegralApproximationResult } from "./IIntegralApproximationResult";
+import { Matrix } from "./Matrix";
 
-export abstract class MathDrawableBaseClass implements I2DEquation {
+export abstract class DerivativeEvaluator implements I2DEquation {
     public abstract evaluateAtX(x: number): number;
     /**equation color */
     public color: string | CanvasGradient | CanvasPattern = 'white';

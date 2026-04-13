@@ -1,7 +1,7 @@
 import { StringHelper } from "../../utilities/StringHelper";
 import { Point3D } from "../../math/Point3D";
 import { Point2D } from "../../math/Point2D";
-import { Polygon } from "./Polygon";
+import { Polygon } from "./Faces/Polygon";
 import { Coordinate } from "./Coordinate";
 import { Material } from "./Material";
 import { Range3D } from "../../math/Range3D";
@@ -44,7 +44,7 @@ export class Mesh
      * @param {number} yScale scale factor to apply to y component of vertex data
      * @param {number} zScale scale factor to apply to z component of vertex data
      */
-    public loadOBJFile(objFileContent: string, xScale: number = 1, yScale: number = 1, zScale: number = 1): void //3 scale factors would distort normals. We would have to make a scale matrix, transpose it & then mulitply the the inverse of the transpose (or use quickbackslash aka cramserSolve)
+    public loadOBJFile(objFileContent: string, xScale: number = 1, yScale: number = 1, zScale: number = 1): void //3 scale factors would distort normals. We would have to make a scale matrix, transpose it & then mulitply the the inverse of the transpose
     {
 
         let linesArray: Array<string> = objFileContent.split(/\r?\n/);
@@ -279,7 +279,7 @@ export class Mesh
 
 
             }
-        } //end for each line in obj file for polygon-face/line/dot data
+        } //end for each line in obj file for polygon-face/line/dot/etc data
 
 
     }

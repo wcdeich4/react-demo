@@ -17,6 +17,28 @@ export class Point3D extends EquatableWithTolerance implements ICloneable<Point3
         this.set(x,y,z);
     }
 
+    /**
+     * get the average of an array of Point3D objects.  Useful for finding the center of a face.  Static method so it can be used in Polygon.getCenter() without creating a Point3D object first.
+     * @param {Array<Point3D>} points array of Point3D objects to get the average of
+     * @returns {Point3D} the average Point3D of the array of Point3D objects
+     */
+    public static average(points: Array<Point3D>): Point3D
+    {
+        let sumX: number = 0;
+        let sumY: number = 0;
+        let sumZ: number = 0;
+        for(let i = 0; i < points.length; i++)
+        {
+            sumX += points[i].x;
+            sumY += points[i].y;
+            sumZ += points[i].z;
+        }
+        const averageX: number = sumX / points.length;
+        const averageY: number = sumY / points.length;
+        const averageZ: number = sumZ / points.length;
+        return new Point3D(averageX, averageY, averageZ);
+    }
+
     //generic methods
     /**
      * set

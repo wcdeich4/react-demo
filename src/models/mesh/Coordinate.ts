@@ -31,7 +31,7 @@ export class Coordinate implements ICloneable<Coordinate>
    */
   public getMultipliedByMatrixOnRight(transformMatrix: Matrix|null = null, inverseTransposedMatrix: Matrix|null = null): Coordinate
   {
-    console.log('inside coordinate.getMultipliedByMatrixOnRight this = ', this)
+ //   console.log('inside coordinate.getMultipliedByMatrixOnRight this = ', this)
     const newCoordinate = this.clone();
     if (transformMatrix){
       newCoordinate.vertex = transformMatrix.multiplyByPoint3DOnRight(this.vertex);

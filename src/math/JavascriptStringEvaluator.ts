@@ -1,9 +1,8 @@
-import { IMathDrawable } from "../models/IMathDrawable";
 import { I2DEquation } from "./I2DEquation";
 import { I3DEquation } from "./I3DEquation";
-import { MathDrawableBaseClass } from "./MathDrawableBaseClass";
+import { DerivativeEvaluator } from "./DerivativeEvaluator";
 
-export class JavascriptStringEvaluator extends MathDrawableBaseClass implements I2DEquation, I3DEquation, IMathDrawable
+export class JavascriptStringEvaluator extends DerivativeEvaluator implements I2DEquation, I3DEquation
 {
     public functionToEvaluate: string;
 

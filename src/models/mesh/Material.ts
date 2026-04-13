@@ -1,24 +1,77 @@
 import { StringHelper } from "../../utilities/StringHelper";
 import { ColorHelper } from "../../utilities/ColorHelper";
+import { ArrayHelper } from "../../utilities/ArrayHelper";
+import { Light } from "../Light";
 
 export class Material
 {
-    public name: string;
-    public  illuminationModel: number = 4; // illum file keyword ignored by Three.js ? 
+
+//TODO: global singleton material library to avoid loading the same material multiple times for different objects that use the same material.
+    public name: string;  //TODO: default to file name
+
+
+
+ //   public textureImageFilePath: string|null = null;
+    
+    public textureImageElement: HTMLImageElement|null = null;
+    
+    //public textureIndex: number = -1;  // -1 means none
+
+    //TODO: fix mistake!!!!!!!!!!!! The HTML5 canvas fill style is only 1 string & there is no way to average 4 different color strings!  So, gotta store them as number arrays, then combine them somehow, then convert to canvas style string
+    public ambientColor: Array<number>; //Ka in .mtl files
+    public diffuseColor: Array<number>; //Kd in .mtl files
+    public specularColor: Array<number>; //Ks in .mtl files
+    public emissiveColor: Array<number>; //Ke in .mtl files
+
+    //TODO: use advanced material properties
+    public illuminationModel: number = 4; // illum
     public specularExponent: number = 0; //0 to 1000
-    public dissolve: number = 1; //1.0 means fully opaque
+    public dissolve: number = 1; //1.0 means fully opaque 
     public opticalDensity: number = 1;  //0.001 to 10.  1.0 means light does not bend as it passes through an object. Higher values increase the amount of bending. Glass is about 1.5 
-	public textureIndex: number = -1;  // -1 means none
-    public ambientColor: string;
-    public diffuseColor: string;
-    public specularColor: string;
-    public emissiveColor: string
+	
+
+
+
+
+
+    /**
+     * usage:
+        const material = new Material();
+        await material.loadTexture('/path/to/texture.png');
+        console.log(material.textureImageElement);
+     * @param textureImageFilePath 
+     * @returns {Promise<void>}
+     */
+    public async loadTexture(textureImageFilePath: string|null): Promise<void> {
+        if (StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(textureImageFilePath)) {
+            return;
+        }
+
+        if (typeof Image === 'undefined') {
+            // Running in Node / test environment where browser Image is not available.
+            return;
+        }
+
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.src = textureImageFilePath;
+
+        await new Promise<void>((resolve, reject) => {
+            image.onload = () => {
+                this.textureImageElement = image;
+                resolve();
+            };
+            image.onerror = () => {
+                reject(new Error(`Failed to load texture image from ${textureImageFilePath}`));
+            };
+        });
+    }
 
     /**
      * load line from a Wavefront MTL file
      * @param {string} materialFileContents mtl file line
      */
-    public load(materialFileContents: string): void
+    public async load(materialFileContents: string): Promise<void>
     {
         let linesArray: Array<string> = materialFileContents.split(/\r?\n/);
         linesArray = linesArray.filter( a => !StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(a));
@@ -55,19 +108,19 @@ export class Material
             }
             else if (currentLineTokens[0] === 'ka')
             {
-                this.ambientColor = ColorHelper.MTLFileLineToHTMLHexadecimalColorString(linesArray[i]);
+                this.ambientColor = ArrayHelper.stringArrayToNumberArray(currentLineTokens, 1, 3);
             }
             else if (currentLineTokens[0] === 'kd')
             {
-                this.diffuseColor = ColorHelper.MTLFileLineToHTMLHexadecimalColorString(linesArray[i]);
+                this.diffuseColor = ArrayHelper.stringArrayToNumberArray(currentLineTokens, 1, 3);
             }
             else if (currentLineTokens[0] === 'ks')
             {
-                this.specularColor = ColorHelper.MTLFileLineToHTMLHexadecimalColorString(linesArray[i]);
+                this.specularColor = ArrayHelper.stringArrayToNumberArray(currentLineTokens, 1, 3);
             }
             else if (currentLineTokens[0] === 'ke')
             {
-                this.emissiveColor = ColorHelper.MTLFileLineToHTMLHexadecimalColorString(linesArray[i]);
+                this.emissiveColor = ArrayHelper.stringArrayToNumberArray(currentLineTokens, 1, 3);
             }
             else if (currentLineTokens[0] === 'tf')
             {
@@ -75,11 +128,11 @@ export class Material
             }
             else if (currentLineTokens[0].startsWith('map_')) //map_Kd
             {
-                throw new Error('Texture loading not yet implemented. Please complete');
+                await this.loadTexture(currentLineTokens[1]);
             }
             else
             {
-                console.warn('unrecoginized line in Material.load(materialFileContents: string) - ' + linesArray[i]);
+                console.warn('cannot recoginize line ' + i + ' in Material.load(materialFileContents: string) - ' + linesArray[i]);
             }
 
 

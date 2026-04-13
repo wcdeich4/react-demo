@@ -19,7 +19,7 @@ describe('Mesh tests', () => {
     const mesh = new Mesh();
     mesh.loadOBJFile(fileContent);
     expect(mesh.groupName).toBe("Square01");
-    expect(mesh.materialName).toBe("quad.mtl");
+    expect(mesh.materialName).toBe("test.mtl");
     expect(mesh.vertexArray.length).toBe(4);
     expect(mesh.vertexArray[0].z).toEqual(0);
     expect(mesh.vertexArray[0].y).toEqual(-0.5);
