@@ -18,6 +18,8 @@ import { Light } from '../models/Light';
 import { IMathDrawable } from '../models/IMathDrawable';
 import { Material } from '../models/mesh/Material';
 import { MaterialPolygon } from '../models/mesh/Faces/MaterialPolygon';
+import { GlobalSingleton } from '../models/GlobalSingleton';
+import { Mesh } from '../models/mesh/Mesh';
 
 let htmlCanvasElement: HTMLCanvasElement = null;
 let mathCanvas: MathCanvas2D = null;
@@ -107,39 +109,87 @@ export default function Scene3D()
   {
     try
     {
-      const url = 'http://localhost:7777/white.mtl';
-      const response = await fetch(url);
-      if (!response.ok)
+      const origin = window.location.origin;
+      const quadMeshURL = origin + '/quad.obj';
+      const quadResponse = await fetch(quadMeshURL);
+      if (!quadResponse.ok)
       {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${quadResponse.status}`);
       }
-      const textContent = await response.text();
-   //   console.log(url + ' content:', textContent);
-      const plainWhiteMaterial = new Material();
+      const quadFileContents = await quadResponse.text();
+      console.log(quadMeshURL + ' content:', quadFileContents);
+
+    const mesh = new Mesh();
+    mesh.loadOBJFile(quadFileContents).then(() => {
+      // console.log('inside mesh.loadOBJFile.then()------------------------------------------------');
+      // console.log('mesh.groupName: ', mesh.groupName);
+      // console.log('mesh.vertexArray: ', mesh.vertexArray);
+      // console.log('mesh.textureCoordinateArray: ', mesh.textureCoordinateArray);
+      // console.log('mesh.normalArray: ', mesh.normalArray);
+      // console.log('mesh.polygonArray: ', mesh.polygonArray);
+      // console.log('mesh.boundingBox: ', mesh.boundingBox);
+
+      drawList.push(mesh);
+
+
+    }).catch((error) => {
+      console.error("Error loading mesh: ", error);
+    });
+
+
+   //   const currentURL = window.location.href;
+    //  const url = currentURL.replace('scene', 'white.mtl');  
+
+    // const mesh = new Mesh();
+    // mesh.loadOBJFile(fileContent);
+
+
+
+
+
+      // const currentURL = window.location.href;
+      // const url = currentURL.replace('scene', 'white.mtl');  
+
+
+   //   const url = 'http://localhost:7777/white.mtl';  //TODO: make url path knowledge dynamic w/ string edit
+      //const response = await fetch(url);
+      // if (!response.ok)
+      // {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+  //     const textContent = await response.text();
+  //  //   console.log(url + ' content:', textContent);
+  //     const plainWhiteMaterial = new Material();
       
-      await plainWhiteMaterial.load(textContent).then(() => {
-        console.log("material.name ======= ", plainWhiteMaterial.name);
-        console.log("material.ambientColor ======= ", plainWhiteMaterial.ambientColor);
-        console.log("material.diffuseColor ======= ", plainWhiteMaterial.diffuseColor);
-        console.log("material.specularColor ======= ", plainWhiteMaterial.specularColor);
-        console.log("material.emissiveColor ======= ", plainWhiteMaterial.emissiveColor);
-        console.log("material.illuminationModel ======= ", plainWhiteMaterial.illuminationModel);
+      // await plainWhiteMaterial.load(textContent).then(() => {
+      //   console.log("material.name ======= ", plainWhiteMaterial.name);
+      //   console.log("material.ambientColor ======= ", plainWhiteMaterial.ambientColor);
+      //   console.log("material.diffuseColor ======= ", plainWhiteMaterial.diffuseColor);
+      //   console.log("material.specularColor ======= ", plainWhiteMaterial.specularColor);
+      //   console.log("material.emissiveColor ======= ", plainWhiteMaterial.emissiveColor);
+      //   console.log("material.illuminationModel ======= ", plainWhiteMaterial.illuminationModel);
 
-        const coordinateArray = [
-          new Coordinate(new Point3D(0.5, -0.5, 0)), 
-          new Coordinate(new Point3D(0.5, 0.5, 0)), 
-          new Coordinate(new Point3D(-0.5, 0.5, 0)),
-          new Coordinate(new Point3D(-0.5, -0.5, 0))
-        ];
-
-        const materialPolygon = new MaterialPolygon(coordinateArray, plainWhiteMaterial);
-
-        drawList.push(materialPolygon);
+      //   const coordinateArray = [
+      //     new Coordinate(new Point3D(0.5, -0.5, 0)), 
+      //     new Coordinate(new Point3D(0.5, 0.5, 0)), 
+      //     new Coordinate(new Point3D(-0.5, 0.5, 0)),
+      //     new Coordinate(new Point3D(-0.5, -0.5, 0))
+      //   ];
+      //   const globalSingleton = GlobalSingleton.getInstance();
+      //   globalSingleton.materialNameObjectMap.set('white', plainWhiteMaterial);
 
 
-      }).catch((error) => {
-        console.error("Error loading material: ", error);
-      });
+
+
+
+      //   const materialPolygon = new MaterialPolygon(coordinateArray, 'white', null);
+
+      //   drawList.push(materialPolygon);
+
+
+      // }).catch((error) => {
+      //   console.error("Error loading material: ", error);
+      // });
 
 
 

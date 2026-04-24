@@ -1,4 +1,4 @@
-newmtl InitialMaterial
+newmtl test
 illum 4
 Kd 0.6 0.6 0.6 #diffuseColor
 Ka 0.2 0.2 0.2 #ambientColor

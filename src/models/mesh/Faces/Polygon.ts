@@ -1,11 +1,12 @@
 import { Matrix } from "../../../math/Matrix";
 import { Point3D } from "../../../math/Point3D";
+import { IMathDrawable } from "../../IMathDrawable";
+import { Light } from "../../Light";
 import { MathCanvas2D } from "../../MathCanvas2D";
 import { Coordinate } from "../Coordinate";
 
-export class Polygon
+export abstract class Polygon implements IMathDrawable
 {
-  //TODO: add material & lighting
   protected currentCenter: Point3D | null = null;
   public coordinateArray: Coordinate[];
   constructor(coords?: Coordinate[])
@@ -19,6 +20,16 @@ export class Polygon
       this.coordinateArray = [];
     }
   }
+  /**
+   * abstract draw method for polymorphic drawing of different types of polygons. The parameters allow for transformation and lighting calculations to be applied during the drawing process.
+   * @param {MathCanvas2D} mathCanvas The math canvas to draw on.
+   * @param {Matrix | null} transformMatrix The transformation matrix to apply.
+   * @param {Matrix | null} inverseTransposedMatrix The inverse transposed matrix to apply.
+   * @param {Array<Light> | null} lightingArray The array of lights to apply.
+   * @param {boolean | null} recalculateCenter Whether to recalculate the center point.
+   * @param {boolean | null} recalculateColor Whether to recalculate the color.
+   */
+  public abstract draw(mathCanvas: MathCanvas2D, transformMatrix?: Matrix, inverseTransposedMatrix?: Matrix, lightingArray?: Array<Light>, recalculateCenter?: boolean, recalculateColor?: boolean): void;
 
   /**
    * get center point of the polygon, which is the average of all the vertices.

@@ -10,7 +10,7 @@ describe('Material tests', () => {
     // Read the file synchronously with 'utf-8' encoding
     const fileContent: string = fs.readFileSync(filePath, 'utf-8');
     // Assert the content
-    expect(fileContent.includes('InitialMaterial')).toBe(true);
+    expect(fileContent.includes('test')).toBe(true);
   });
 
   it('Load mtl file test 1', async () => {
@@ -24,7 +24,7 @@ describe('Material tests', () => {
     }).catch((error) => {
       console.error("Error loading material: ", error);
     });
-    expect(material.name).toBe("InitialMaterial");
+    expect(material.name).toBe("test");
     expect(material.illuminationModel).toBe(4);
     const expectedDiffuseColor = [0.6, 0.6, 0.6];
 

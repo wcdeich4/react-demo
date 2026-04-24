@@ -1,5 +1,6 @@
 import { Matrix } from "../../../math/Matrix";
 import { ColorHelper } from "../../../utilities/ColorHelper";
+import { GlobalSingleton } from "../../GlobalSingleton";
 import { IMathDrawable } from "../../IMathDrawable";
 import { Light } from "../../Light";
 import { MathCanvas2D } from "../../MathCanvas2D";
@@ -10,10 +11,14 @@ import { Polygon } from "./Polygon";
 export class MaterialPolygon extends Polygon implements IMathDrawable
 {
   private currentColor?: string | CanvasGradient | CanvasPattern;
-  public material?: Material;
-  constructor(coords?: Coordinate[], material?: Material)
+  private material?: Material;
+  public materialName?: string; //store name to find object reference later
+  constructor(coords?: Coordinate[], materialName?: string, material?: Material)
   {
     super(coords);
+    if (materialName){
+      this.materialName = materialName;
+    }
     if (material)
     {
       this.material = material;
@@ -24,62 +29,89 @@ export class MaterialPolygon extends Polygon implements IMathDrawable
    * Calculates the color of the polygon under the current lighting conditions.
    * @param {Array<Light>} lightArray 
    * @param {boolean?} recalculateCenter find center of the polygon again instead of using cached value, to avoid returning a wrong value after the model has been transformed.
-   * @returns {string} color of the polygon under the current lighting conditions, in HTML hexadecimal format
+   * @returns {string | CanvasGradient | CanvasPattern} color of the polygon under the current lighting conditions, in HTML hexadecimal format
    */
-  public getColorUnderCurrentLighting(lightArray: Array<Light>, recalculateCenter?: boolean): string
+  public getColorUnderCurrentLighting(lightArray: Array<Light>, recalculateCenter?: boolean): string | CanvasGradient | CanvasPattern
   {
-    const currentAmbientColor = [0, 0, 0];
-    const currentDiffuseColor = [0, 0, 0];
-    const currentSpecularColor = [0, 0, 0];
-    for (var i = 0; lightArray && i < lightArray.length; i++)
-    {
-      //ambient lighting is added to the color regardless of whether the light illuminates the polygon or not, since ambient lighting is supposed to represent indirect light that has bounced around the environment and illuminates all objects equally.
-
-      if(this.material.ambientColor && lightArray[i].ambientColor) //safety check
+    if(!this.material){
+      const globalSingleton = GlobalSingleton.getInstance();
+      this.material = globalSingleton.materialNameObjectMap.get(this.materialName) as Material;
+    }
+    if(this.material){
+      const currentAmbientColor = [0, 0, 0];
+      const currentDiffuseColor = [0, 0, 0];
+      const currentSpecularColor = [0, 0, 0];
+      for (var i = 0; lightArray && i < lightArray.length; i++)
       {
-        currentAmbientColor[0] += this.material.ambientColor[0] * lightArray[i].ambientColor[0];
-        currentAmbientColor[1] += this.material.ambientColor[1] * lightArray[i].ambientColor[1];
-        currentAmbientColor[2] += this.material.ambientColor[2] * lightArray[i].ambientColor[2];
-      }
+        //ambient lighting is added to the color regardless of whether the light illuminates the polygon or not, since ambient lighting is supposed to represent indirect light that has bounced around the environment and illuminates all objects equally.
 
-
-
-      //until scan line algorithms are implemented, treat diffuse and specular lighting the same.
-      if (lightArray[i].illuminatesPoint(this.getCenter(recalculateCenter)))
-      {
-        if(this.material.diffuseColor && lightArray[i].diffuseColor) //safety check
+        if(this.material.ambientColor && lightArray[i].ambientColor) //safety check
         {
-          currentDiffuseColor[0] += this.material.diffuseColor[0] * lightArray[i].diffuseColor[0];
-          currentDiffuseColor[1] += this.material.diffuseColor[1] * lightArray[i].diffuseColor[1];
-          currentDiffuseColor[2] += this.material.diffuseColor[2] * lightArray[i].diffuseColor[2];
+          currentAmbientColor[0] += this.material.ambientColor[0] * lightArray[i].ambientColor[0];
+          currentAmbientColor[1] += this.material.ambientColor[1] * lightArray[i].ambientColor[1];
+          currentAmbientColor[2] += this.material.ambientColor[2] * lightArray[i].ambientColor[2];
         }
-        if(this.material.specularColor && lightArray[i].specularColor) //safety check
-        { 
-          currentSpecularColor[0] += this.material.specularColor[0] * lightArray[i].specularColor[0];
-          currentSpecularColor[1] += this.material.specularColor[1] * lightArray[i].specularColor[1];
-          currentSpecularColor[2] += this.material.specularColor[2] * lightArray[i].specularColor[2];
+
+
+
+        //until scan line algorithms are implemented, treat diffuse and specular lighting the same.
+        if (lightArray[i].illuminatesPoint(this.getCenter(recalculateCenter)))
+        {
+          if(this.material.diffuseColor && lightArray[i].diffuseColor) //safety check
+          {
+            currentDiffuseColor[0] += this.material.diffuseColor[0] * lightArray[i].diffuseColor[0];
+            currentDiffuseColor[1] += this.material.diffuseColor[1] * lightArray[i].diffuseColor[1];
+            currentDiffuseColor[2] += this.material.diffuseColor[2] * lightArray[i].diffuseColor[2];
+          }
+          if(this.material.specularColor && lightArray[i].specularColor) //safety check
+          { 
+            currentSpecularColor[0] += this.material.specularColor[0] * lightArray[i].specularColor[0];
+            currentSpecularColor[1] += this.material.specularColor[1] * lightArray[i].specularColor[1];
+            currentSpecularColor[2] += this.material.specularColor[2] * lightArray[i].specularColor[2];
+          }
         }
       }
+
+      const finalColor = [
+        currentAmbientColor[0] + currentDiffuseColor[0] + currentSpecularColor[0] + this.material.emissiveColor[0],
+        currentAmbientColor[1] + currentDiffuseColor[1] + currentSpecularColor[1] + this.material.emissiveColor[1],
+        currentAmbientColor[2] + currentDiffuseColor[2] + currentSpecularColor[2] + this.material.emissiveColor[2]
+      ];
+
+      //cannot have more than 100% of any color, so cap the values at 1
+      if (finalColor[0] > 1) finalColor[0] = 1;
+      if (finalColor[1] > 1) finalColor[1] = 1;
+      if (finalColor[2] > 1) finalColor[2] = 1;
+
+      this.currentColor = ColorHelper.numberArrayToHTMLHexadecimalColorString(finalColor, 0);
+    
+    
+    
+    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
     }
 
-    const finalColor = [
-      currentAmbientColor[0] + currentDiffuseColor[0] + currentSpecularColor[0] + this.material.emissiveColor[0],
-      currentAmbientColor[1] + currentDiffuseColor[1] + currentSpecularColor[1] + this.material.emissiveColor[1],
-      currentAmbientColor[2] + currentDiffuseColor[2] + currentSpecularColor[2] + this.material.emissiveColor[2]
-    ];
-
-    //cannot have more than 100% of any color, so cap the values at 1
-    if (finalColor[0] > 1) finalColor[0] = 1;
-    if (finalColor[1] > 1) finalColor[1] = 1;
-    if (finalColor[2] > 1) finalColor[2] = 1;
-
-    this.currentColor = ColorHelper.numberArrayToHTMLHexadecimalColorString(finalColor, 0);
+   
     return this.currentColor;
     //TODO: unit test
   }
 
   public draw(mathCanvas: MathCanvas2D, transformMatrix: Matrix | null = null, inverseTransposedMatrix: Matrix | null = null, lightingArray?: Array<Light>, recalculateCenter?: boolean, recalculateColor?: boolean): void
   {
+//console.log('this.currentColor::::::::::::::::::::::::::::::::::::::::::::::::', this.currentColor) //undefined all the time
+
+
+
     if(!this.currentColor ||  recalculateColor ){
       this.currentColor = this.getColorUnderCurrentLighting(lightingArray, recalculateCenter);
     }

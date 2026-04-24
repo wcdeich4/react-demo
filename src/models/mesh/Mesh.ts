@@ -5,20 +5,30 @@ import { Polygon } from "./Faces/Polygon";
 import { Coordinate } from "./Coordinate";
 import { Material } from "./Material";
 import { Range3D } from "../../math/Range3D";
+import { Light } from "../Light";
+import { MathCanvas2D } from "../MathCanvas2D";
+import { Matrix } from "../../math/Matrix";
+import { MaterialPolygon } from "./Faces/MaterialPolygon";
+import { IMathDrawable } from "../IMathDrawable";
+import { GlobalSingleton } from "../GlobalSingleton";
 
 //TODO: unit test!!!!!!!!!!!!!!!!!11
 //safety check indices are less than length of arrays, and greater than or equal to 1 (obj file format is 1 indexed) ?
 
-export class Mesh
+export class Mesh implements IMathDrawable
 {
+    private currentMaterialFilePath: string | null;
+    private currentMaterialName: string | null;
     public boundingBox: Range3D;
     public groupName: string | null;
-    public materialName: string | null; //store name to find object reference later
-    public material: Material | null;
+
+
+    //    public material: Material | null;
     public vertexArray: Array<Point3D>;
     public textureCoordinateArray: Array<Point2D>;
     public normalArray: Array<Point3D>;
     public polygonArray: Array<Polygon>;
+    //TODO: add support for other obj file features such as lines, dots, smoothing groups, objects, etc.  Also add support for other file formats such as STL, PLY, etc.
 
     public constructor(objFileContents?: string)
     {
@@ -44,8 +54,13 @@ export class Mesh
      * @param {number} yScale scale factor to apply to y component of vertex data
      * @param {number} zScale scale factor to apply to z component of vertex data
      */
-    public loadOBJFile(objFileContent: string, xScale: number = 1, yScale: number = 1, zScale: number = 1): void //3 scale factors would distort normals. We would have to make a scale matrix, transpose it & then mulitply the the inverse of the transpose
+
+
+    //TODO: make async & return promise for material
+    public async loadOBJFile(objFileContent: string, xScale: number = 1, yScale: number = 1, zScale: number = 1): Promise<void>  //3 scale factors would distort normals. We would have to make a scale matrix, transpose it & then mulitply the the inverse of the transpose
     {
+
+console.log('objFileContent==================================================== ', objFileContent);
 
         let linesArray: Array<string> = objFileContent.split(/\r?\n/);
         linesArray = linesArray.filter(a => !StringHelper.isUndefinedOrNullOrEmptyOrWhitespace(a));
@@ -77,10 +92,65 @@ export class Mesh
                     }
                     this.groupName = currentLineTokens[1];
                 }
+                else if (currentLineTokens[0] === 'mtllib')
+                {
+                    if ((typeof window == 'undefined') || (typeof fetch == 'undefined'))
+                    {
+                        console.warn('Skipping mtllib load in non-browser test environment: ' + this.currentMaterialFilePath);
+                    }
+                    else
+                    {
+                        this.currentMaterialFilePath = currentLineTokens[1];
+
+                        const expectedURL = window.location.origin + '/' + this.currentMaterialFilePath;
+                        console.log('expected material file URL: ' + expectedURL);
+
+                        let currentMaterialFileContents: string | null = null;
+                        const response = await fetch(expectedURL);
+                        if (response.ok)
+                        {
+                            currentMaterialFileContents = await response.text();
+
+console.log('fetched material file contents from expected URL*********************************** ' + expectedURL, currentMaterialFileContents);
+
+                            this.loadMTLFileAndPushToGlobalSingleton(currentMaterialFileContents);
+                        }
+                        else
+                        {
+                            const response = await fetch(this.currentMaterialFilePath);
+                            if (response.ok)
+                            {
+                                currentMaterialFileContents = await response.text();
+
+
+console.log('fetched material file contents from expected URL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ' + expectedURL, currentMaterialFileContents);
+
+
+
+
+
+                                this.loadMTLFileAndPushToGlobalSingleton(currentMaterialFileContents);
+                            }
+                            else
+                            {
+                                throw new Error('Failed to fetch material file. Tried URL: ' + expectedURL + ' and ' + this.currentMaterialFilePath + '. HTTP status: ' + response.status);
+                            }
+                        }
+                    }
+
+
+
+
+                }
                 else if (currentLineTokens[0] === 'usemtl')
                 {
-                    this.materialName = currentLineTokens[1];
+                    this.currentMaterialName = currentLineTokens[1];
                 }
+                //TODO: make async & return promise for material
+
+
+
+
                 else if (currentLineTokens[0] == 'vt')
                 {
                     if (currentLineTokens.length < 3)
@@ -111,7 +181,7 @@ export class Mesh
                     {
                         //remember currentLineTokens[0] is 'vn'
                         //normals are transformed by the inverse of the transpose, but the transpose of a pure scale is just the same scale matrix, and to get the inverse of multiplication, just divide
-                        const x = parseFloat(currentLineTokens[1]) / xScale; 
+                        const x = parseFloat(currentLineTokens[1]) / xScale;
                         const y = parseFloat(currentLineTokens[2]) / yScale;
                         const z = parseFloat(currentLineTokens[3]) / zScale;
                         //w component ignored if present for now
@@ -149,7 +219,7 @@ export class Mesh
                     {
                         throw new Error('Error pushing vertex data into vertexArray.  Data line: ' + linesArray[i] + ' Error: ' + error);
                     }
-                }   
+                }
             }
         } //end for each line in obj file for vertex, texture coordinate, and normal vector data
 
@@ -169,11 +239,12 @@ export class Mesh
             {
                 linesArray[i] = linesArray[i].trim();
                 let currentLineTokens = linesArray[i].split(/\s+/); //split on whitespace
-  
+
                 //Case for polygonal face. We can copy a reference to the vertex, texture, and normal vector data into the current polygon. This is possible because TypeScript objects are reference types.  If we want to save back to a .obj file, then we must search the arrays to find the indices. Probably better to search starting from the end backwards, just in case there is accidental duplication.
                 if (currentLineTokens[0] === 'f')
                 {
-                    const currentPolygon: Polygon = new Polygon();
+                    const currentPolygon: MaterialPolygon = new MaterialPolygon();
+                    currentPolygon.materialName = this.currentMaterialName;
                     //remember currentLineTokens[0] is 'f'
                     for (let j = 1; j < currentLineTokens.length; j++) //for each currentLineTokens[j]
                     {
@@ -278,10 +349,61 @@ export class Mesh
                 }
 
 
+
             }
         } //end for each line in obj file for polygon-face/line/dot/etc data
 
 
+    }
+
+
+    public draw(mathCanvas: MathCanvas2D, transformMatrix?: Matrix, inverseTransposedMatrix?: Matrix, lightingArray?: Array<Light>, recalculateCenter?: boolean, recalculateColor?: boolean): void
+    {
+        for (let i = 0; i < this.polygonArray.length; i++)
+        {
+            this.polygonArray[i].draw(mathCanvas, transformMatrix, inverseTransposedMatrix, lightingArray, recalculateCenter, recalculateColor);
+        }
+
+        //TODO: support lines and dots, ...
+    }
+
+
+    // private async loadMTLFileFromURL(materialFilePath: string): Promise<void>
+    // {
+    //     const response = await fetch(materialFilePath);
+    //     if (!response.ok)
+    //     {
+    //         throw new Error('Failed to fetch material file: ' + materialFilePath + '. HTTP status: ' + response.status);
+    //     }
+
+    //     const currentMaterialFileContents = await response.text();
+    //     this.loadMTLFileAndPushToGlobalSingleton(currentMaterialFileContents);
+    // }
+
+    protected loadMTLFileAndPushToGlobalSingleton(materialFileContents: string): void
+    {
+        const currentMaterial = new Material();
+
+console.log('materialFileContents==================================================== ', materialFileContents);
+
+
+        currentMaterial.load(materialFileContents).then(() =>
+        {
+
+            // console.log("material.name ======= ", currentMaterial.name);
+            // console.log("material.ambientColor ======= ", currentMaterial.ambientColor);
+            // console.log("material.diffuseColor ======= ", currentMaterial.diffuseColor);
+            // console.log("material.specularColor ======= ", currentMaterial.specularColor);
+            // console.log("material.emissiveColor ======= ", currentMaterial.emissiveColor);
+            // console.log("material.illuminationModel ======= ", currentMaterial.illuminationModel);
+
+            const globalSingleton = GlobalSingleton.getInstance();
+            globalSingleton.materialNameObjectMap.set(currentMaterial.name, currentMaterial);
+        }
+        ).catch((error) =>
+        {
+            console.error("Error loading material: ", error);
+        });
     }
 
 }
